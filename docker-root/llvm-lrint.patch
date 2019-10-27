@@ -1,0 +1,27 @@
+# from https://reviews.llvm.org/D68841/new/
+--- a/llvm/lib/Target/PowerPC/PPCTargetTransformInfo.cpp
++++ b/llvm/lib/Target/PowerPC/PPCTargetTransformInfo.cpp
+@@ -276,7 +276,9 @@
+         unsigned Opcode = 0;
+         if (F->getIntrinsicID() != Intrinsic::not_intrinsic) {
+           switch (F->getIntrinsicID()) {
+-          default: continue;
++          // If it is some intrinsic we don't understand, assume it may lower to
++          // a call for safety.
++          default: return true;
+           // If we have a call to ppc_is_decremented_ctr_nonzero, or ppc_mtctr
+           // we're definitely using CTR.
+           case Intrinsic::set_loop_iterations:
+@@ -331,8 +333,12 @@
+           case Intrinsic::ceil:               Opcode = ISD::FCEIL;      break;
+           case Intrinsic::trunc:              Opcode = ISD::FTRUNC;     break;
+           case Intrinsic::rint:               Opcode = ISD::FRINT;      break;
++          case Intrinsic::lrint:              Opcode = ISD::LRINT;      break;
++          case Intrinsic::llrint:             Opcode = ISD::LLRINT;     break;
+           case Intrinsic::nearbyint:          Opcode = ISD::FNEARBYINT; break;
+           case Intrinsic::round:              Opcode = ISD::FROUND;     break;
++          case Intrinsic::lround:             Opcode = ISD::LROUND;     break;
++          case Intrinsic::llround:            Opcode = ISD::LLROUND;    break;
+           case Intrinsic::minnum:             Opcode = ISD::FMINNUM;    break;
+           case Intrinsic::maxnum:             Opcode = ISD::FMAXNUM;    break;
+           case Intrinsic::umul_with_overflow: Opcode = ISD::UMULO;      break;

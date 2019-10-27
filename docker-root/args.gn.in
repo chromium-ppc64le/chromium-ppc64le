@@ -1,0 +1,49 @@
+# Clang
+custom_toolchain="//build/toolchain/linux/unbundle:default"
+host_toolchain="//build/toolchain/linux/unbundle:default"
+is_clang=true
+clang_base_path="@@CLANG_BASE_PATH@@"
+clang_use_chrome_plugins=false
+use_lld=true
+use_icf=true
+use_jumbo_build=true # this speeds up compilation
+use_thin_lto=true
+thin_lto_enable_optimizations=true
+concurrent_links=2
+
+# Build options
+is_debug=false # Release mode
+is_official_build=true # enable optimizations like in official build
+treat_warnings_as_errors=false
+is_component_build = false # statically link components
+enable_linux_installer=true
+
+# Codecs
+ffmpeg_branding="ChromeOS"
+proprietary_codecs=true
+enable_mse_mpeg2ts_stream_parser=true
+enable_av1_decoder=true
+use_openh264=true
+
+# GPU
+use_vaapi=true
+
+# Disable unsupported features
+enable_nacl=false
+enable_widevine=false
+enable_dav1d_decoder=false
+
+# Google stuff
+fieldtrial_testing_like_official_build=true
+google_api_key=""
+google_default_client_id=""
+google_default_client_secret=""
+
+# system integration
+system_libdir="lib64"
+use_gio=true
+use_pulseaudio=true
+icu_use_data_file=true
+
+pdf_enable_xfa=true
+
