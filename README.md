@@ -8,7 +8,7 @@ These are largely the same as upstream's. For an alternative, you can use https:
 ## Quick download
 
 <!-- CURRENT TABLE -->
-| RPM | .tar.gz |
+| RPM | .tar.xz |
 | --- | ------- |
 | [v78.0.3904.70-1](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.70-1/chromium-browser-stable-78.0.3904.70-1.ppc64le.rpm) | [v78.0.3904.70-1](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.70-1/chromium-browser-stable-78.0.3904.70-1.tar.xz) |
 
