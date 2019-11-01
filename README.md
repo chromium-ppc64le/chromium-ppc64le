@@ -37,6 +37,9 @@ Just download the [latest](https://github.com/vddvss/chromium-ppc64le/releases/d
 sudo make -j16
 ```
 
+Note that with the configuration in this repo, you will need at least 64G of RAM
+and at least 8 cores. 
+
 ## Notes on Binaries
 
 ### Patches included

@@ -21,10 +21,16 @@ gn-exe := $(gn-bin-dir)/gn
 llvm-archive := $(llvm_rev).tar.gz
 llvm-dir := $(CURDIR)/llvm-project-$(llvm_rev)
 llvm-build-dir := $(CURDIR)/llvm-build
+llvm-patches-dir := $(CURDIR)/patches/llvm
 clang := $(llvm-build-dir)/bin/clang
 
 cpf-dir := chromium_power
 
+# from chrome 79 beta DEPS
+dav1d-archive := 62fcd0cb19d2fe46af7541d8185de86d45d58697.tar.gz
+dav1d_url := https://chromium.googlesource.com/external/github.com/videolan/dav1d/+archive/62fcd0cb19d2fe46af7541d8185de86d45d58697.tar.gz
+
+chrome-patches-dir := $(CURDIR)/patches/chrome
 chrome-archive := chromium-$(chrome_ver).tar.xz
 chrome-dir := $(CURDIR)/chromium-$(chrome_ver)
 chrome-target := out/Release
@@ -35,6 +41,7 @@ chrome-dist-file := $(chrome-target-dir)/$(dist-file-name)
 chrome := $(chrome-target-dir)/chrome
 
 llvm-patched := llvm-patched.stamp
+libdav1d-rebuilt := libdav1d-rebuilt.stamp
 ffmpeg-rebuilt := ffmpeg-rebuilt.stamp
 libvpx-rebuilt := libvpx-rebuilt.stamp
 chrome-patched := chrome-patched.stamp
@@ -60,7 +67,7 @@ export CXXFLAGS ?= $(ignored_warnings) $(opt_flags)
 export LDFLAGS += -lm
 
 ORIG_PATH := $(PATH)
-export PATH := $(gn-bin-dir):$(ORIG_PATH)
+export PATH := $(gn-bin-dir):$(llvm-build-dir)/bin:$(ORIG_PATH)
 
 gn:
 	git clone $(gn_url)
@@ -71,13 +78,14 @@ $(gn-exe): | gn
 	ninja -j $(num_threads) -C out
 
 $(llvm-archive):
-	wget $(llvm_url)
+	wget -q $(llvm_url)
 
 $(llvm-dir): | $(llvm-archive)
 	tar xzf $|
 
-$(llvm-patched): llvm-lrint.patch | $(llvm-dir)
-	patch -d $| -p1 < $<
+$(llvm-patched): export QUILT_PATCHES := $(llvm-patches-dir)
+$(llvm-patched): | $(llvm-dir)
+	cd $| && quilt push -a
 	touch $@
 
 $(llvm-build-dir): $(llvm-patched)
@@ -101,7 +109,7 @@ $(cpf-dir):
 	cd $@ && git checkout $(cpf_rev)
 
 $(chrome-archive):
-	wget $(chrome_url)
+	wget -q $(chrome_url)
 
 $(chrome-dir): | $(chrome-archive)
 	tar xf $|
@@ -109,15 +117,23 @@ $(chrome-dir): | $(chrome-archive)
 $(chrome-target-dir): | $(chrome-dir)
 	mkdir -p $@
 
-$(chrome-patched): $(cpf-dir) enable-vaapi.patch enable-rpm-build.patch Yarn.patch | $(chrome-dir)
+$(chrome-patched): export QUILT_PATCHES := $(chrome-patches-dir)
+$(chrome-patched): $(cpf-dir) | $(chrome-dir)
 	cd $< && python3 cpf.py $|
-	patch -d $| -p1 < $(word 2,$^)
-	patch -d $| -p1 < $(word 3,$^)
-	patch -d $| -p1 < $(word 4,$^)
+	rm -rf $(chrome-dir)/third_party/dav1d/libdav1d/*
+	cd $(chrome-dir)/third_party/dav1d/libdav1d && wget -q $(dav1d_url)
+	cd $(chrome-dir)/third_party/dav1d/libdav1d && tar xf $(dav1d-archive)
+	cd $| && quilt push -a
 	touch $@
 
-$(chrome-args-gn): args.gn.in | $(chrome-target-dir)
+$(chrome-args-gn): conf/args.gn.in | $(chrome-target-dir)
 	sed -e 's|@@CLANG_BASE_PATH@@|$(llvm-build-dir)|g' $< > $@
+
+$(libdav1d-rebuilt): $(clang) $(chrome-patched) | $(chrome-dir)
+	+cd $(chrome-dir)/third_party/dav1d && \
+	./generate_configs.py && \
+	./generate_source.py
+	touch $@
 
 $(ffmpeg-rebuilt): $(clang) $(chrome-patched) | $(chrome-dir)
 	+cd $(chrome-dir)/third_party/ffmpeg && \
@@ -132,7 +148,11 @@ $(libvpx-rebuilt): $(clang) $(chrome-patched) | $(gn-exe) $(chrome-dir)
 	./generate_gni.sh
 	touch $@
 
-$(chrome-configured): $(chrome-args-gn) $(ffmpeg-rebuilt) $(libvpx-rebuilt) | $(gn-exe)
+$(chrome-configured): $(chrome-args-gn) \
+                      $(ffmpeg-rebuilt) \
+		      $(libvpx-rebuilt) \
+		      $(libdav1d-rebuilt) \
+		      | $(gn-exe)
 	gn gen --root=$(chrome-dir) $(chrome-target-dir)
 	touch $@
 

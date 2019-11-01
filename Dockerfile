@@ -12,7 +12,7 @@ RUN dnf -y install git wget make cmake ninja-build clang python \
     libgnome-keyring-devel pango-devel dbus-devel atk-devel gtk3-devel \
     libva-devel nodejs gperf pulseaudio-libs-devel java-1.8.0-openjdk \
     pciutils-devel alsa-lib-devel bison libXScrnSaver-devel elfutils \
-    fakeroot rpm-build \
+    fakeroot rpm-build quilt meson \
     && dnf clean all
 
 RUN mkdir -p /workdir

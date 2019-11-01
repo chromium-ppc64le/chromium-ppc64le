@@ -111,6 +111,7 @@ tag-release:
 clean:
 	rm -rf $(artifact-dir)
 	rm -f *.stamp
+	rm -f *.log
 	rm -f README.bak
 	podman rm -f chrome-builder || [ $$? = "1" ]
 	podman rmi -f chrome-build-image || [ $$? = "1" ]

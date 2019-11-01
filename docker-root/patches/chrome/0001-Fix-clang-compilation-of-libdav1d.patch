@@ -1,0 +1,61 @@
+From 742cd05f32e516be43b9b7cb240b9aadbd6d79a3 Mon Sep 17 00:00:00 2001
+From: Colin Samples <colin.samples+git@gmail.com>
+Date: Sat, 2 Nov 2019 10:39:00 -0400
+Subject: [PATCH] Fix clang compilation of libdav1d
+
+---
+ src/ppc/looprestoration_init_tmpl.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/third_party/dav1d/libdav1d/src/ppc/looprestoration_init_tmpl.c b/third_party/dav1d/libdav1d/src/ppc/looprestoration_init_tmpl.c
+index 78ff129..07d8d67 100644
+--- a/third_party/dav1d/libdav1d/src/ppc/looprestoration_init_tmpl.c
++++ b/third_party/dav1d/libdav1d/src/ppc/looprestoration_init_tmpl.c
+@@ -52,12 +52,12 @@ static void wiener_filter_h_vsx(int32_t *hor_ptr,
+                                 const int16_t filterh[7],
+                                 const int w, const int h)
+ {
+-    static const i32x4 zerov = vec_splats(0);
+-    static const i32x4 seven_vec = vec_splats(7);
+-    static const i32x4 bitdepth_added_vec = vec_splats(1 << 14);
+-    static const i32x4 round_bits_vec = vec_splats(3);
+-    static const i32x4 rounding_off_vec = vec_splats(1<<2);
+-    static const i32x4 clip_limit_v = vec_splats((1 << 13) - 1);
++    const i32x4 zerov = vec_splats(0);
++    const i32x4 seven_vec = vec_splats(7);
++    const i32x4 bitdepth_added_vec = vec_splats(1 << 14);
++    const i32x4 round_bits_vec = vec_splats(3);
++    const i32x4 rounding_off_vec = vec_splats(1<<2);
++    const i32x4 clip_limit_v = vec_splats((1 << 13) - 1);
+ 
+     i16x8 filterhvall = vec_vsx_ld(0, filterh);
+     i16x8 filterhv0 =  vec_splat( filterhvall, 0);
+@@ -130,8 +130,8 @@ static void wiener_filter_h_vsx(int32_t *hor_ptr,
+ }
+ 
+ static inline i16x8 iclip_u8_vec(i16x8 v) {
+-    static const i16x8 zerov = vec_splats((int16_t)0);
+-    static const i16x8 maxv = vec_splats((int16_t)255);
++    const i16x8 zerov = vec_splats((int16_t)0);
++    const i16x8 maxv = vec_splats((int16_t)255);
+     v = vec_max(zerov, v);
+     v = vec_min(maxv, v);
+     return v;
+@@ -185,10 +185,10 @@ static inline void wiener_filter_v_vsx(uint8_t *p,
+                                        const int16_t filterv[7],
+                                        const int w, const int h)
+ {
+-    static const i32x4 round_bits_vec = vec_splats(11);
+-    static const i32x4 rounding_off_vec = vec_splats(1 << 10);
+-    static const i32x4 round_offset_vec = vec_splats(1 << 18);
+-    static const i32x4 seven_vec = vec_splats(7);
++    const i32x4 round_bits_vec = vec_splats(11);
++    const i32x4 rounding_off_vec = vec_splats(1 << 10);
++    const i32x4 round_offset_vec = vec_splats(1 << 18);
++    const i32x4 seven_vec = vec_splats(7);
+ 
+     i32x4 filterv0 =  vec_splats((int32_t) filterv[0]);
+     i32x4 filterv1 =  vec_splats((int32_t) filterv[1]);
+-- 
+2.23.0
+
