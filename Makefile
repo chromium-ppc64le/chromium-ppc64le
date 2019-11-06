@@ -12,26 +12,23 @@ download_url_base := https://github.com/vddvss/chromium-ppc64le/releases/downloa
 download_url := $(download_url_base)/$(release_tag)
 
 # Targets
-rpm-file := $(artifact-dir)/$(rpm-file-name)
-dist-file := $(artifact-dir)/$(dist-file-name)
-
 rpm-signed := rpm-signed.stamp
 
 # ed script to update the README for a new release
 define update_readme_ed_script :=
 H
 /<!-- RPM INSTALL COMMAND -->/+2c
-sudo dnf install $(download_url)/$(rpm-file-name)
+sudo dnf install $(download_url)/$(chrome-rpm-file-name)
 .
 
 /<!-- ARCHIVE TABLE -->/+2x
 s!sudo dnf install \($(download_url_base)/\(.*\)/.*\)\.ppc64le\.rpm!| \2 | [rpm](\1.ppc64le.rpm) | [.tar.xz](\1.tar.xz) |!
 
 /<!-- CURRENT TABLE -->/+3c
-| [$(release_tag)]($(download_url)/$(rpm-file-name)) | [$(release_tag)]($(download_url)/$(dist-file-name)) |
+| [$(release_tag)]($(download_url)/$(chrome-rpm-file-name)) | [$(release_tag)]($(download_url)/$(chrome-dist-file-name)) |
 .
 
-g/latest/s|\[latest\]([^)]\+\.tar\.xz)|[latest]($(download_url)/$(dist-file-name))|g
+g/latest/s|\[latest\]([^)]\+\.tar\.xz)|[latest]($(download_url)/$(chrome-dist-file-name))|g
 w
 endef
 export update_readme_ed_script
@@ -39,7 +36,7 @@ export update_readme_ed_script
 $(artifact-dir):
 	mkdir -p $@
 
-$(rpm-file): | $(artifact-dir)
+$(chrome-rpm-artifact): | $(artifact-dir)
 	podman build -t chrome-build-image .
 	podman run \
 	    --name=chrome-builder \
@@ -47,23 +44,24 @@ $(rpm-file): | $(artifact-dir)
 	    --volume=$(CURDIR)/$|:/workdir/$|:z \
 	    chrome-build-image
 
-$(dist-file): $(rpm-file)
+$(chrome-dist-artifact): $(chrome-rpm-artifact)
+$(llvm-dist-artifact): $(chrome-rpm-artifact)
 
-$(rpm-signed): $(rpm-file)
+$(rpm-signed): $(chrome-rpm-artifact)
 	rpm \
 	    -D "_gpg_name Chromium Unofficial PPC64LE Packaging" \
 	    --addsign $<
 	touch $@
 
-$(artifact-dir)/$(dist-file).asc: $(dist-file)
+$(chrome-dist-artifact).asc: $(chrome-dist-artifact)
 	gpg \
 	    --detach-sign \
 	    --armor \
 	    -u 'Chromium Unofficial PPC64LE Packaging' \
 	    $<
 
-$(artifact-dir)/sha265sums: $(rpm-signed) $(dist-file)
-	cd $(artifact-dir) && sha256sum $(rpm-file-name) $(dist-file-name) > $(@F)
+$(artifact-dir)/sha265sums: $(rpm-signed) $(chrome-dist-artifact)
+	cd $(artifact-dir) && sha256sum $(chrome-rpm-file-name) $(chrome-dist-file-name) > $(@F)
 
 $(artifact-dir)/sha265sums.asc: $(artifact-dir)/sha265sums
 	gpg \
@@ -76,21 +74,21 @@ $(artifact-dir)/sha265sums.asc: $(artifact-dir)/sha265sums
 sign-rpm: $(rpm-signed)
 
 .PHONY: sign-tarball
-sign-tarball: $(artifact-dir)/$(dist-file).asc
+sign-tarball: $(chrome-dist-artifact).asc
 
 .PHONY: sign
-sign: $(rpm-signed) $(artifact-dir)/$(dist-file).asc
+sign: $(rpm-signed) $(chrome-dist-artifact).asc
 
 .PHONY: chown
 chown:
 	chown -R $(SUDO_UID):$(SUDO_GID) $(artifact-dir)
 
 .PHONY: release
-release: $(artifact-dir)/$(dist-file).asc $(artifact-dir)/sha265sums.asc
+release: $(chrome-dist-artifact).asc $(artifact-dir)/sha265sums.asc
 
 .PHONY: install
 install: release
-	dnf install ./$(rpm-file)
+	dnf install ./$(chrome-rpm-artifact)
 
 .PHONY: update-readme
 update-readme:
@@ -117,5 +115,5 @@ clean:
 	podman rmi -f chrome-build-image || [ $$? = "1" ]
 
 .PHONY: all
-all: $(rpm-file) $(dist-file)
+all: $(chrome-rpm-artifact) $(chrome-dist-artifact) $(llvm-dist-artifact)
 
