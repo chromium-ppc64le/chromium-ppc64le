@@ -1,0 +1,16 @@
+job:
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+
+  tags:
+    - ppc64le
+
+  timeout: 6h
+
+  script: make
+
+  artifacts:
+    paths:
+      - target/*.tar*
+      - target/*.rpm
+

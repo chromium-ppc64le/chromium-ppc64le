@@ -1,0 +1,3 @@
+[submodule "chromium-ppc64le-patches-quilt"]
+	path = docker-root/patches/chrome/chromium-ppc64le-patches-quilt
+	url = ../chromium-ppc64le-patches-quilt.git
