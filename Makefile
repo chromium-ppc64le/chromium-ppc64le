@@ -103,7 +103,7 @@ update-readme:
 .PHONY: tag-release
 tag-release:
 	@[ $$UID != "0" ] || (echo "ERROR: must be run as normal user" ; exit 1)
-	git tag -s $(release_tag)
+	git tag -s $(release_tag) -m "Chromium $(chrome_ver)"
 
 .PHONY: clean
 clean:

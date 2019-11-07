@@ -20,5 +20,5 @@ chrome-rpm-artifact := $(artifact-dir)/$(chrome-rpm-file-name)
 chrome-dist-artifact := $(artifact-dir)/$(chrome-dist-file-name)
 
 llvm-dist-dir := clang+lld+llvm-$(llvm_rev)-ppc64le
-llvm-dist-artifact := $(artifact-dir)/$(llmv-dist-base).tar.xz
+llvm-dist-artifact := $(artifact-dir)/$(llvm-dist-dir).tar.xz
 
