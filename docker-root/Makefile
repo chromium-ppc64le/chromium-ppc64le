@@ -71,10 +71,13 @@ export LDFLAGS += -lm
 ORIG_PATH := $(PATH)
 export PATH := $(gn-bin-dir):$(llvm-build-dir)/bin:$(ORIG_PATH)
 
+# apply-patch-series -- function to apply a patch series using quilt
+# usage: $(call apply-patch-series,<patch series dir>,<dir to apply patches>)
 define apply-patch-series
-cd $(2) && env QUILT_PATCHES=$(1) quilt push -a
+cd $(2) && env QUILT_PATCHES="$(1)" quilt push -a
 rm -rf $(2)/.pc
 endef
+
 
 $(artifact-dir):
 	mkdir -p $@
