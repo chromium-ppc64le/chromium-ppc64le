@@ -37,7 +37,7 @@ $(artifact-dir):
 	mkdir -p $@
 
 $(chrome-rpm-artifact): | $(artifact-dir)
-	podman build -t chrome-build-image .
+	buildah bud -t chrome-build-image .
 	podman run \
 	    --name=chrome-builder \
 	    --rm=true \
@@ -104,6 +104,15 @@ update-readme:
 tag-release:
 	@[ $$UID != "0" ] || (echo "ERROR: must be run as normal user" ; exit 1)
 	git tag -s $(release_tag) -m "Chromium $(chrome_ver)"
+
+.PHONY: gitlab-build
+gitlab-build: | $(artifact-dir)
+	buildah version
+	buildah info
+	buildah bud -t chrome-build-image . && \
+	buildah run \
+	    --mount=type=bind,source=$(CURDIR)/$|,destination=/workdir/$| \
+	    $$(buildah from chrome-build-image) -- make -w -j16
 
 .PHONY: clean
 clean:

@@ -7,7 +7,7 @@ job:
 
   timeout: 6h
 
-  script: make
+  script: make gitlab-build
 
   artifacts:
     paths:

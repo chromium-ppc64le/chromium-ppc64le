@@ -10,6 +10,7 @@ RUN dnf -y update && \
         alsa-lib-devel \
         atk-devel \
         bison \
+        buildah \
         clang \
         cmake \
         cups-devel \

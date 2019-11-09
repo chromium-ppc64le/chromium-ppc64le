@@ -61,7 +61,10 @@ export NM = $(or $(realpath $(llvm-build-dir)/bin/llvm-nm), $(ORIG_NM))
 
 ignored_warnings := -Wno-shorten-64-to-32 \
 		    -Wno-deprecated-declarations \
-		    -Wno-deprecated
+		    -Wno-deprecated \
+		    -Wno-unused-function \
+		    -Wno-unused-variable \
+		    -Wno-implicit-float-conversion
 opt_flags := -mcpu=power9 -mtune=power9
 
 export CFLAGS ?= $(ignored_warnings) $(opt_flags)
@@ -87,7 +90,7 @@ gn:
 
 $(gn-exe): | gn
 	cd gn && \
-	env CC=$(ORIG_CC) CXX=$(ORIG_CXX) AR=$(ORIG_AR) python build/gen.py && \
+	env CC=/usr/bin/clang CXX=/usr/bin/clang++ AR=/usr/bin/ar python build/gen.py && \
 	ninja -j $(num_threads) -C out
 
 $(llvm-archive):
