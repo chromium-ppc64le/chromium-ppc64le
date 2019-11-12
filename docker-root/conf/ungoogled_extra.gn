@@ -1,0 +1,15 @@
+safe_browsing_mode=0
+closure_compile=false
+enable_hangout_services_extension=false
+enable_hevc_demuxing=true
+enable_mdns=false
+enable_mse_mpeg2ts_stream_parser=true
+enable_one_click_signin=false
+enable_reading_list=false
+enable_remoting=false
+enable_reporting=false
+enable_service_discovery=false
+enable_widevine=true
+exclude_unwind_tables=true
+optimize_webui=false
+

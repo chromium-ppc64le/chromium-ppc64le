@@ -13,22 +13,30 @@ gn_url := https://gn.googlesource.com/gn
 llvm_url := https://github.com/llvm/llvm-project/archive/$(llvm_rev).tar.gz
 chrome_url := https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$(chrome_ver).tar.xz
 
+# Quilt series files to apply to chrome
+ifdef UNGOOGLED
+chrome-series := \
+    patches/chrome/chromium-ppc64le-patches-quilt/patches/series \
+    patches/chrome/series.ungoogled \
+    patches/chrome/series.extra
+else
+chrome-series := \
+    patches/chrome/chromium-ppc64le-patches-quilt/patches/series \
+    patches/chrome/series.extra
+endif
+
+###############################################################################
 # Targets
+###############################################################################
 gn-bin-dir := $(CURDIR)/gn/out
 gn-exe := $(gn-bin-dir)/gn
 
 llvm-archive := $(llvm_rev).tar.gz
 llvm-dir := $(CURDIR)/llvm-project-$(llvm_rev)
 llvm-build-dir := $(CURDIR)/llvm-build
-llvm-patches-dir := $(CURDIR)/patches/llvm
+llvm-patch-series-dir := $(CURDIR)/patches/llvm
 clang := $(llvm-build-dir)/bin/clang
 
-# from chrome 79 beta DEPS
-dav1d-archive := 62fcd0cb19d2fe46af7541d8185de86d45d58697.tar.gz
-dav1d_url := https://chromium.googlesource.com/external/github.com/videolan/dav1d/+archive/62fcd0cb19d2fe46af7541d8185de86d45d58697.tar.gz
-
-chrome-patches-dir := $(CURDIR)/patches/chrome
-chrome-ppc-patches-dir := $(chrome-patches-dir)/chromium-ppc64le-patches-quilt/patches
 chrome-archive := chromium-$(chrome_ver).tar.xz
 chrome-dir := $(CURDIR)/chromium-$(chrome_ver)
 chrome-target := out/Release
@@ -37,7 +45,14 @@ chrome-args-gn := $(chrome-target-dir)/args.gn
 chrome-rpm-file := $(chrome-target-dir)/$(chrome-rpm-file-name)
 chrome-dist-file := $(chrome-target-dir)/$(chrome-dist-file-name)
 
+chrome-args-gn-in := conf/args.gn.in
+ifdef UNGOOGLED
+ug-chrome-args-gn-extra := conf/ungoogled_extra.gn
+endif
+
 chrome := $(chrome-target-dir)/chrome
+
+ug-chrome-patches-dir := $(CURDIR)/patches/chrome/ungoogled-chromium
 
 llvm-patched := llvm-patched.stamp
 libdav1d-rebuilt := libdav1d-rebuilt.stamp
@@ -46,14 +61,23 @@ libvpx-rebuilt := libvpx-rebuilt.stamp
 chrome-ppc-patched := chrome-ppc-patched.stamp
 chrome-patched := chrome-patched.stamp
 chrome-configured := chrome-configured.stamp
+ifdef UNGOOGLED
+ug-chrome-pruned := ug-chrome-pruned.stamp
+ug-chrome-domain-subbed := ug-chrome-domain-subbed.stamp
+ug-chrome-extra-args-applied := ug-chrome-extra-args-applied.stamp
+endif
 
-# Enviroment
+media-rebuild-prereqs := $(clang) $(chrome-patched) $(ug-chrome-domain-subbed)
+
+###############################################################################
+# Environment
+###############################################################################
 ORIG_CC := $(CC)
 ORIG_CXX := $(CXX)
 ORIG_AR := $(AR)
 ORIG_NM := $(NM)
 
-# Use the compiled verion of clang once it's built
+# Use the compiled version of clang once it's built
 export CC = $(or $(realpath $(clang)), $(ORIG_CC))
 export CXX = $(or $(realpath $(llvm-build-dir)/bin/clang++), $(ORIG_CXX))
 export AR = $(or $(realpath $(llvm-build-dir)/bin/llvm-ar), $(ORIG_AR))
@@ -74,14 +98,9 @@ export LDFLAGS += -lm
 ORIG_PATH := $(PATH)
 export PATH := $(gn-bin-dir):$(llvm-build-dir)/bin:$(ORIG_PATH)
 
-# apply-patch-series -- function to apply a patch series using quilt
-# usage: $(call apply-patch-series,<patch series dir>,<dir to apply patches>)
-define apply-patch-series
-cd $(2) && env QUILT_PATCHES="$(1)" quilt push -a
-rm -rf $(2)/.pc
-endef
-
-
+###############################################################################
+# Rules
+###############################################################################
 $(artifact-dir):
 	mkdir -p $@
 
@@ -90,23 +109,30 @@ gn:
 
 $(gn-exe): | gn
 	cd gn && \
-	env CC=/usr/bin/clang CXX=/usr/bin/clang++ AR=/usr/bin/ar python build/gen.py && \
+	env CC=/usr/bin/clang \
+	    CXX=/usr/bin/clang++ \
+	    AR=/usr/bin/ar \
+	    python build/gen.py && \
 	ninja -j $(num_threads) -C out
 
+###############################################################################
+# LLVM
+###############################################################################
 $(llvm-archive):
 	wget -q $(llvm_url)
 
 $(llvm-dir): | $(llvm-archive)
 	tar xzf $|
 
-$(llvm-patched): $(llvm-patches-dir) | $(llvm-dir)
-	$(call apply-patch-series,$<,$|)
+$(llvm-patched): export QUILT_PATCHES := $(llvm-patch-series-dir)
+$(llvm-patched): | $(llvm-dir)
+	cd $| && quilt push -a
 	touch $@
 
-$(llvm-build-dir): $(llvm-patched)
+$(llvm-build-dir):
 	mkdir -p $@
 
-$(llvm-build-dir)/CMakeCache.txt: | $(llvm-build-dir) $(llvm-dir)
+$(llvm-build-dir)/CMakeCache.txt: $(llvm-patched) | $(llvm-build-dir) $(llvm-dir)
 	cmake -S $(llvm-dir)/llvm -B $(llvm-build-dir) \
 	    -G "Ninja" \
 	    -DCMAKE_BUILD_TYPE=Release \
@@ -124,6 +150,9 @@ $(llvm-dist-artifact): $(clang) | $(artifact-dir)
 	ninja -C $(llvm-build-dir) install
 	tar cJf $@ $|/$(llvm-dist-dir)
 
+###############################################################################
+# Chrome
+###############################################################################
 $(chrome-archive):
 	wget -q $(chrome_url)
 
@@ -133,35 +162,55 @@ $(chrome-dir): | $(chrome-archive)
 $(chrome-target-dir): | $(chrome-dir)
 	mkdir -p $@
 
-$(chrome-ppc-patched): $(chrome-ppc-patches-dir) | $(chrome-dir)
-	rm -rf $(chrome-dir)/third_party/dav1d/libdav1d/*
-	cd $(chrome-dir)/third_party/dav1d/libdav1d && wget -q $(dav1d_url)
-	cd $(chrome-dir)/third_party/dav1d/libdav1d && tar xf $(dav1d-archive)
-	$(call apply-patch-series,$<,$|)
+series: $(chrome-series)
+	# This regex takes concatenates the lists of patches from series files
+	# in $(chrome-series) and appends the relevant directory to each patch,
+	# ignoring comments and empty lines.
+	$(foreach series,$^,\
+	    sed -e 's|^\([^#]\+\)$$|$(dir $(series))\1|' $(series) >> $@ &&) :
+
+$(chrome-patched): export QUILT_PATCHES := $(CURDIR)
+$(chrome-patched): series $(ug-chrome-pruned) | $(chrome-dir)
+	cd $| && quilt push -a
 	touch $@
 
-$(chrome-patched): $(chrome-patches-dir) $(chrome-ppc-patched) | $(chrome-dir)
-	$(call apply-patch-series,$<,$|)
+ifdef UNGOOGLED
+$(ug-chrome-pruned): | $(chrome-dir)
+	$(ug-chrome-patches-dir)/utils/prune_binaries.py $| \
+	    $(ug-chrome-patches-dir)/pruning.list
 	touch $@
 
-$(chrome-args-gn): conf/args.gn.in | $(chrome-target-dir)
-	sed -e 's|@@CLANG_BASE_PATH@@|$(llvm-build-dir)|g' $< > $@
+$(ug-chrome-domain-subbed): $(chrome-patched) | $(chrome-dir)
+	rm -f domsubcache.tar.gz
+	$(ug-chrome-patches-dir)/utils/domain_substitution.py apply \
+	    -r $(ug-chrome-patches-dir)/domain_regex.list \
+	    -f $(ug-chrome-patches-dir)/domain_substitution.list \
+	    -c domsubcache.tar.gz \
+	    $|
+	touch $@
+endif
 
-$(libdav1d-rebuilt): $(clang) $(chrome-patched) | $(chrome-dir)
-	+cd $(chrome-dir)/third_party/dav1d && \
+$(chrome-args-gn): $(chrome-args-gn-in) \
+		   $(ug-chrome-args-gn-extra) \
+		   | $(chrome-target-dir)
+	sed -e 's|@@CLANG_BASE_PATH@@|$(llvm-build-dir)|g' $^ > $@
+
+# This is not used currently, but should work with chrome 79
+$(libdav1d-rebuilt): $(media-rebuild-prereqs) | $(chrome-dir)
+	+cd $|/third_party/dav1d && \
 	./generate_configs.py && \
 	./generate_source.py
 	touch $@
 
-$(ffmpeg-rebuilt): $(clang) $(chrome-patched) | $(chrome-dir)
-	+cd $(chrome-dir)/third_party/ffmpeg && \
+$(ffmpeg-rebuilt): $(media-rebuild-prereqs) | $(chrome-dir)
+	+cd $|/third_party/ffmpeg && \
 	./chromium/scripts/build_ffmpeg.py --branding="ChromeOS" linux ppc64 && \
 	./chromium/scripts/generate_gn.py && \
 	./chromium/scripts/copy_config.sh
 	touch $@
 
-$(libvpx-rebuilt): $(clang) $(chrome-patched) | $(gn-exe) $(chrome-dir)
-	+cd $(chrome-dir)/third_party/libvpx && \
+$(libvpx-rebuilt): $(media-rebuild-prereqs) $(gn-exe) | $(chrome-dir)
+	+cd $|/third_party/libvpx && \
 	mkdir -p source/config/linux/ppc64 && \
 	./generate_gni.sh
 	touch $@
@@ -169,7 +218,6 @@ $(libvpx-rebuilt): $(clang) $(chrome-patched) | $(gn-exe) $(chrome-dir)
 $(chrome-configured): $(chrome-args-gn) \
                       $(ffmpeg-rebuilt) \
 		      $(libvpx-rebuilt) \
-		      $(libdav1d-rebuilt) \
 		      | $(gn-exe)
 	gn gen --root=$(chrome-dir) $(chrome-target-dir)
 	touch $@
@@ -188,11 +236,38 @@ $(chrome-dist-file): $(chrome-rpm-file)
 	mv opt/chromium.org/chromium $(chrome-file-name-base)
 	tar cJf $@ $(chrome-file-name-base)
 
-$(chrome-rpm-artifact): $(chrome-rpm-file) | $(artifact-dir)
+$(chrome-rpm-artifact): $(chrome-rpm-file) $(chrome-dist-file) | $(artifact-dir)
 	mv $< $@
 
 $(chrome-dist-artifact): $(chrome-dist-file) | $(artifact-dir)
 	mv $< $@
+
+.PHONY: clean-chrome
+clean-chrome:
+	rm -rf $(chrome-dir)
+	rm -f series \
+	      $(chrome-patched) \
+	      $(ug-chrome-pruned) \
+	      domsubcache.tar.gz \
+	      $(ug-chrome-domain-subbed) \
+	      $(chrome-args-gn) \
+	      $(libdav1d-rebuilt) \
+	      $(ffmpeg-rebuilt) \
+	      $(libvpx-rebuilt) \
+	      $(chrome-configured)
+
+.PHONY: retouch-chrome-prereqs
+retouch-chrome-prereqs:
+	touch $(chrome-patched) \
+	      $(ug-chrome-pruned) \
+	      $(ug-chrome-domain-subbed) \
+	      $(chrome-args-gn) \
+	      $(libdav1d-rebuilt) \
+	      $(ffmpeg-rebuilt) \
+	      $(libvpx-rebuilt)
+
+.PHONY: llvm
+llvm: $(clang)
 
 .PHONY: rpm
 rpm: $(chrome-rpm-artifact)

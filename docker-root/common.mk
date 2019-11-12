@@ -13,7 +13,12 @@ chrome_ver := 78.0.3904.97
 # be bumped when releasing a new rpm with the same version number
 chrome_rpm_release := 1
 
-chrome-file-name-base := chromium-browser-stable-$(chrome_ver)-$(chrome_rpm_release)
+ifdef UNGOOGLED
+dist-prefix := ungoogled-
+endif
+
+chrome-file-name-base := \
+    $(dist-prefix)chromium-browser-stable-$(chrome_ver)-$(chrome_rpm_release)
 chrome-rpm-file-name := $(chrome-file-name-base).ppc64le.rpm
 chrome-dist-file-name := $(chrome-file-name-base).tar.xz
 chrome-rpm-artifact := $(artifact-dir)/$(chrome-rpm-file-name)

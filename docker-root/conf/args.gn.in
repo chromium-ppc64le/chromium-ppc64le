@@ -23,7 +23,7 @@ ffmpeg_branding="ChromeOS"
 proprietary_codecs=true
 enable_mse_mpeg2ts_stream_parser=true
 use_openh264=true
-enable_dav1d_decoder=true
+enable_dav1d_decoder=false
 enable_libaom_decoder=false
 
 # GPU

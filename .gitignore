@@ -1,3 +1,4 @@
+build-root/
 target/
 *.stamp
 *.bak

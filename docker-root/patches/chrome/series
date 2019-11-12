@@ -1,5 +1,0 @@
-enable-vaapi.patch
-enable-rpm-build.patch
-0001-Add-PPC64-support-for-libdav1d.patch
-0001-Fix-clang-compilation-of-libdav1d.patch
-

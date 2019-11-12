@@ -1,16 +1,24 @@
-job:
+stages:
+  - build
+
+build:
   variables:
     GIT_SUBMODULE_STRATEGY: recursive
 
   only:
     - tags
+    - web
 
   tags:
     - ppc64le
 
+  stage: build
+
   timeout: 6h
 
-  script: make gitlab-build
+  script:
+    - dnf install -y findutils
+    - make gitlab-build
 
   artifacts:
     paths:

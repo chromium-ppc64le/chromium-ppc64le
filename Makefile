@@ -36,12 +36,16 @@ export update_readme_ed_script
 $(artifact-dir):
 	mkdir -p $@
 
+build-root:
+	mkdir -p $@
+
 $(chrome-rpm-artifact): | $(artifact-dir)
 	buildah bud -t chrome-build-image .
 	podman run \
+	    --env-host \
 	    --name=chrome-builder \
 	    --rm=true \
-	    --volume=$(CURDIR)/$|:/workdir/$|:z \
+	    --volume=$(CURDIR)/$(artifact-dir):/workdir/$(artifact-dir):z \
 	    chrome-build-image
 
 $(chrome-dist-artifact): $(chrome-rpm-artifact)
@@ -61,7 +65,8 @@ $(chrome-dist-artifact).asc: $(chrome-dist-artifact)
 	    $<
 
 $(artifact-dir)/sha265sums: $(rpm-signed) $(chrome-dist-artifact)
-	cd $(artifact-dir) && sha256sum $(chrome-rpm-file-name) $(chrome-dist-file-name) > $(@F)
+	cd $(artifact-dir) && \
+	    sha256sum $(chrome-rpm-file-name) $(chrome-dist-file-name) > $(@F)
 
 $(artifact-dir)/sha265sums.asc: $(artifact-dir)/sha265sums
 	gpg \
@@ -69,6 +74,29 @@ $(artifact-dir)/sha265sums.asc: $(artifact-dir)/sha265sums
 	    --armor \
 	    -u 'Chromium Unofficial PPC64LE Packaging' \
 	    $<
+
+# This is a development environment target that mounts the container's workdir
+# in ./build-root and opens a terminal in the container
+.PHONY: dev
+dev: | $(artifact-dir) build-root
+	cp -R docker-root/* build-root
+	podman build -t chrome-build-image .
+	podman run -it \
+	    --name=chrome-builder \
+	    --rm=true \
+	    --volume=$(CURDIR)/build-root:/workdir:z \
+	    --volume=$(CURDIR)/$(artifact-dir):/workdir/$(artifact-dir):z \
+	    chrome-build-image /usr/bin/bash
+
+.PHONY: gitlab-build
+gitlab-build: | $(artifact-dir)
+	buildah version
+	buildah bud -t chrome-build-image . && \
+	CTRNAME=$$(buildah from chrome-build-image) && \
+	printenv -0 | xargs -I{} -0 buildah config --env "{}" $$CTRNAME && \
+	buildah run \
+	    --mount=type=bind,source=$(CURDIR)/$|,destination=/workdir/$| \
+	    $$CTRNAME -- make -w -j16
 
 .PHONY: sign-rpm
 sign-rpm: $(rpm-signed)
@@ -105,18 +133,10 @@ tag-release:
 	@[ $$UID != "0" ] || (echo "ERROR: must be run as normal user" ; exit 1)
 	git tag -s $(release_tag) -m "Chromium $(chrome_ver)"
 
-.PHONY: gitlab-build
-gitlab-build: | $(artifact-dir)
-	buildah version
-	buildah info
-	buildah bud -t chrome-build-image . && \
-	buildah run \
-	    --mount=type=bind,source=$(CURDIR)/$|,destination=/workdir/$| \
-	    $$(buildah from chrome-build-image) -- make -w -j16
-
 .PHONY: clean
 clean:
 	rm -rf $(artifact-dir)
+	rm -rf build-root
 	rm -f *.stamp
 	rm -f *.log
 	rm -f README.bak
