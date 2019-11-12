@@ -2,6 +2,9 @@ job:
   variables:
     GIT_SUBMODULE_STRATEGY: recursive
 
+  only:
+    - tags
+
   tags:
     - ppc64le
 
