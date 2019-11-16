@@ -1,4 +1,5 @@
 enable-vaapi.patch
 enable-rpm-build.patch
 ppc64le-branding.patch
+change-user-agent.patch
 
