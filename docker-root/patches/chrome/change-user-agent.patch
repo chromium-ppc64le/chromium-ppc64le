@@ -1,12 +1,22 @@
 --- chromium-79.0.3945.36.orig/content/common/user_agent.cc
 +++ chromium-79.0.3945.36/content/common/user_agent.cc
-@@ -141,8 +141,7 @@ base::StringPiece GetFrozenUserAgent(boo
+@@ -100,7 +100,7 @@ std::string BuildOSCpuInfo(bool include_
+       sizeof(void*) == sizeof(int32_t)) {
+     cputype.assign("i686 (x86_64)");
+   } else {
+-    cputype.assign(unixinfo.machine);
++    cputype.assign("x86_64");
+   }
+ #endif
  
- std::string BuildUserAgentFromProduct(const std::string& product) {
-   std::string os_info;
--  base::StringAppendF(&os_info, "%s%s", GetUserAgentPlatform().c_str(),
--                      BuildOSCpuInfo(false).c_str());
-+  base::StringAppendF(&os_info, "%sLinux x86_64", GetUserAgentPlatform().c_str());
-   return BuildUserAgentFromOSAndProduct(os_info, product);
- }
- 
+--- chromium-79.0.3945.36.orig/third_party/blink/renderer/core/frame/navigator_id.cc
++++ chromium-79.0.3945.36/third_party/blink/renderer/core/frame/navigator_id.cc
+@@ -83,7 +83,7 @@ String NavigatorID::platform() const {
+   if (platform_name->IsNull()) {
+     *platform_name =
+         String(uname(&osname) >= 0 ? String(osname.sysname) + String(" ") +
+-                                         String(osname.machine)
++                                         String("x86_64")
+                                    : g_empty_string);
+   }
+   return *platform_name;
