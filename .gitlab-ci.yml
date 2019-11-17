@@ -1,5 +1,6 @@
 stages:
   - build
+  - deploy
 
 build:
   variables:
@@ -17,11 +18,35 @@ build:
   timeout: 6h
 
   script:
-    - dnf install -y findutils
+    - dnf install -y findutils createrepo_c
     - make gitlab-build
+    - mkdir -p repo
+    - createrepo -v -u ${CI_JOB_URL}/artifacts/raw/target -o repo target
 
   artifacts:
     paths:
+      - repo/
       - target/*.tar*
       - target/*.rpm
+
+pages:
+  stage: deploy
+  dependencies:
+    - build
+
+  only:
+    - tags
+    - web
+
+  when: manual
+
+  tags:
+    - ppc64le
+
+  script:
+    - mv repo/ public/
+
+  artifacts:
+    paths:
+      - public
 

@@ -279,5 +279,5 @@ dist: $(chrome-dist-artifact)
 llvm-dist: $(llvm-dist-artifact)
 
 .PHONY: all
-all: rpm dist llvm-dist
+all: rpm dist
 
