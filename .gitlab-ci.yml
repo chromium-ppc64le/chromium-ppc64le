@@ -1,5 +1,6 @@
 stages:
   - build
+  - package
   - deploy
 
 build:
@@ -29,8 +30,8 @@ build:
       - target/*.tar*
       - target/*.rpm
 
-rpm:
-  stage: deploy
+package:
+  stage: package
 
   dependencies:
     - build
@@ -53,7 +54,7 @@ rpm:
 pages:
   stage: deploy
   dependencies:
-    - rpm
+    - package
 
   only:
     - tags
