@@ -96,7 +96,8 @@ gitlab-build: | $(artifact-dir)
 	printenv -0 | xargs -I{} -0 buildah config --env "{}" $$CTRNAME && \
 	buildah run \
 	    --mount=type=bind,source=$(CURDIR)/$|,destination=/workdir/$| \
-	    $$CTRNAME -- make -w -j16
+	    $$CTRNAME -- /usr/bin/bash -c \
+	    'make -w -j16 && make clean-chrome && make -w -j16 UNGOOGLED=1'
 
 .PHONY: sign-rpm
 sign-rpm: $(rpm-signed)

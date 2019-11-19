@@ -10,7 +10,7 @@ These are largely the same as upstream's. For an alternative, you can use https:
 <!-- CURRENT TABLE -->
 | RPM | .tar.xz |
 | --- | ------- |
-| [v78.0.3904.87-1](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.87-1/chromium-browser-stable-78.0.3904.87-1.ppc64le.rpm) | [v78.0.3904.87-1](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.87-1/chromium-browser-stable-78.0.3904.87-1.tar.xz) |
+| [v78.0.3904.108-1](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm) | [v78.0.3904.108-1](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.tar.xz) |
 
 ## Installing the RPM
 
@@ -24,12 +24,12 @@ sudo rpm --import https://github.com/vddvss/chromium-ppc64le/raw/master/RPM-GPG-
 
 <!-- RPM INSTALL COMMAND -->
 ```
-sudo dnf install https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.87-1/chromium-browser-stable-78.0.3904.87-1.ppc64le.rpm
+sudo dnf install https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm
 ```
 
 ## Downloading a prebuilt binary
 
-Just download the [latest](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.87-1/chromium-browser-stable-78.0.3904.87-1.tar.xz) and extract it.
+Just download the [latest](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.tar.xz) and extract it.
 
 ## Building from source
 
@@ -77,5 +77,6 @@ files in the chromium tree seem to make more assumptions about the platform.
 <!-- ARCHIVE TABLE -->
 | Version  | RPM | .tar.xz |
 | -------- | --- | --------|
+| v78.0.3904.87-1 | [rpm](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.87-1/chromium-browser-stable-78.0.3904.87-1.ppc64le.rpm) | [.tar.xz](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.87-1/chromium-browser-stable-78.0.3904.87-1.tar.xz) |
 | v78.0.3904.70-1 | [rpm](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.70-1/chromium-browser-stable-78.0.3904.70-1.ppc64le.rpm) | [.tar.xz](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.70-1/chromium-browser-stable-78.0.3904.70-1.tar.xz) |
 

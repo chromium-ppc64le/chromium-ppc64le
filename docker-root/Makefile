@@ -9,6 +9,8 @@ num_threads := 16
 
 include common.mk
 
+CONCURRENT_LINKS ?= 2
+
 gn_url := https://gn.googlesource.com/gn
 llvm_url := https://github.com/llvm/llvm-project/archive/$(llvm_rev).tar.gz
 chrome_url := https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$(chrome_ver).tar.xz
@@ -193,7 +195,9 @@ endif
 $(chrome-args-gn): $(chrome-args-gn-in) \
 		   $(ug-chrome-args-gn-extra) \
 		   | $(chrome-target-dir)
-	sed -e 's|@@CLANG_BASE_PATH@@|$(llvm-build-dir)|g' $^ > $@
+	sed -e 's|@@CLANG_BASE_PATH@@|$(llvm-build-dir)|g' \
+	    -e 's|@@CONCURRENT_LINKS@@|$(CONCURRENT_LINKS)|g' \
+	    $^ > $@
 
 # This is not used currently, but should work with chrome 79
 $(libdav1d-rebuilt): $(media-rebuild-prereqs) | $(chrome-dir)

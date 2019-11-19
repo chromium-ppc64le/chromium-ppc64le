@@ -29,10 +29,31 @@ build:
       - target/*.tar*
       - target/*.rpm
 
+rpm:
+  stage: deploy
+
+  dependencies:
+    - build
+
+  only:
+    - tags
+    - web
+
+  tags:
+    - ppc64le
+
+  script:
+    - mkdir -p repo
+    - createrepo -v -u ${CI_JOB_URL}/artifacts/raw/target -o repo target
+
+  artifacts:
+    paths:
+      - repo/
+
 pages:
   stage: deploy
   dependencies:
-    - build
+    - rpm
 
   only:
     - tags
@@ -44,7 +65,9 @@ pages:
     - ppc64le
 
   script:
-    - mv repo/ public/
+    - rm -rf public
+    - mkdir public
+    - mv repo/ public/dnf-repo
 
   artifacts:
     paths:
