@@ -1,0 +1,6 @@
+[Chromium PPC64LE]
+name=Chromium PPC64LE
+baseurl=https://gitlab.com/chromium-ppc64le/chromium-ppc64le/dnf-repo
+enabled=1
+gpgcheck=0
+

@@ -90,7 +90,8 @@ ignored_warnings := -Wno-shorten-64-to-32 \
 		    -Wno-deprecated \
 		    -Wno-unused-function \
 		    -Wno-unused-variable \
-		    -Wno-implicit-float-conversion
+		    -Wno-implicit-float-conversion \
+		    -Wno-unused-private-field
 opt_flags := -mcpu=power9 -mtune=power9
 
 export CFLAGS ?= $(ignored_warnings) $(opt_flags)
@@ -164,10 +165,10 @@ $(chrome-dir): | $(chrome-archive)
 $(chrome-target-dir): | $(chrome-dir)
 	mkdir -p $@
 
+# This regex takes concatenates the lists of patches from series files in
+# $(chrome-series) and appends the relevant directory to each patch, ignoring
+# comments and empty lines.
 series: $(chrome-series)
-	# This regex takes concatenates the lists of patches from series files
-	# in $(chrome-series) and appends the relevant directory to each patch,
-	# ignoring comments and empty lines.
 	$(foreach series,$^,\
 	    sed -e 's|^\([^#]\+\)$$|$(dir $(series))\1|' $(series) >> $@ &&) :
 
@@ -201,20 +202,20 @@ $(chrome-args-gn): $(chrome-args-gn-in) \
 
 # This is not used currently, but should work with chrome 79
 $(libdav1d-rebuilt): $(media-rebuild-prereqs) | $(chrome-dir)
-	+cd $|/third_party/dav1d && \
+	cd $|/third_party/dav1d && \
 	./generate_configs.py && \
 	./generate_source.py
 	touch $@
 
 $(ffmpeg-rebuilt): $(media-rebuild-prereqs) | $(chrome-dir)
-	+cd $|/third_party/ffmpeg && \
+	cd $|/third_party/ffmpeg && \
 	./chromium/scripts/build_ffmpeg.py --branding="ChromeOS" linux ppc64 && \
 	./chromium/scripts/generate_gn.py && \
 	./chromium/scripts/copy_config.sh
 	touch $@
 
 $(libvpx-rebuilt): $(media-rebuild-prereqs) $(gn-exe) | $(chrome-dir)
-	+cd $|/third_party/libvpx && \
+	cd $|/third_party/libvpx && \
 	mkdir -p source/config/linux/ppc64 && \
 	./generate_gni.sh
 	touch $@
@@ -231,7 +232,7 @@ $(chrome): $(chrome-configured)
 	    media chrome chrome_sandbox chromedriver clear_key_cdm
 
 $(chrome-rpm-file): $(chrome)
-	ninja -C $(chrome-target-dir) -j $(num_threads) stable_rpm
+	ninja -C $(chrome-target-dir) -j $(num_threads) $(chrome_channel)_rpm
 
 # For the tarball artifact, just extract the files from the RPM, since it only
 # includes the files needed and the binaries are already stripped

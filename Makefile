@@ -12,68 +12,11 @@ download_url_base := https://github.com/vddvss/chromium-ppc64le/releases/downloa
 download_url := $(download_url_base)/$(release_tag)
 
 # Targets
-rpm-signed := rpm-signed.stamp
-
-# ed script to update the README for a new release
-define update_readme_ed_script :=
-H
-/<!-- RPM INSTALL COMMAND -->/+2c
-sudo dnf install $(download_url)/$(chrome-rpm-file-name)
-.
-
-/<!-- ARCHIVE TABLE -->/+2x
-s!sudo dnf install \($(download_url_base)/\(.*\)/.*\)\.ppc64le\.rpm!| \2 | [rpm](\1.ppc64le.rpm) | [.tar.xz](\1.tar.xz) |!
-
-/<!-- CURRENT TABLE -->/+3c
-| [$(release_tag)]($(download_url)/$(chrome-rpm-file-name)) | [$(release_tag)]($(download_url)/$(chrome-dist-file-name)) |
-.
-
-g/latest/s|\[latest\]([^)]\+\.tar\.xz)|[latest]($(download_url)/$(chrome-dist-file-name))|g
-w
-endef
-export update_readme_ed_script
-
 $(artifact-dir):
 	mkdir -p $@
 
 build-root:
 	mkdir -p $@
-
-$(chrome-rpm-artifact): | $(artifact-dir)
-	buildah bud -t chrome-build-image .
-	podman run \
-	    --env-host \
-	    --name=chrome-builder \
-	    --rm=true \
-	    --volume=$(CURDIR)/$(artifact-dir):/workdir/$(artifact-dir):z \
-	    chrome-build-image
-
-$(chrome-dist-artifact): $(chrome-rpm-artifact)
-$(llvm-dist-artifact): $(chrome-rpm-artifact)
-
-$(rpm-signed): $(chrome-rpm-artifact)
-	rpm \
-	    -D "_gpg_name Chromium Unofficial PPC64LE Packaging" \
-	    --addsign $<
-	touch $@
-
-$(chrome-dist-artifact).asc: $(chrome-dist-artifact)
-	gpg \
-	    --detach-sign \
-	    --armor \
-	    -u 'Chromium Unofficial PPC64LE Packaging' \
-	    $<
-
-$(artifact-dir)/sha265sums: $(rpm-signed) $(chrome-dist-artifact)
-	cd $(artifact-dir) && \
-	    sha256sum $(chrome-rpm-file-name) $(chrome-dist-file-name) > $(@F)
-
-$(artifact-dir)/sha265sums.asc: $(artifact-dir)/sha265sums
-	gpg \
-	    --clear-sign \
-	    --armor \
-	    -u 'Chromium Unofficial PPC64LE Packaging' \
-	    $<
 
 # This is a development environment target that mounts the container's workdir
 # in ./build-root and opens a terminal in the container
@@ -97,28 +40,14 @@ gitlab-build: | $(artifact-dir)
 	buildah run \
 	    --mount=type=bind,source=$(CURDIR)/$|,destination=/workdir/$| \
 	    $$CTRNAME -- /usr/bin/bash -c \
-	    'make -w -j16 && make clean-chrome && make -w -j16 UNGOOGLED=1'
+	    'make -j16 && make clean-chrome && make -j16 UNGOOGLED=1'
 
-.PHONY: sign-rpm
-sign-rpm: $(rpm-signed)
+.PHONY: tag-release
+tag-release:
+	@[ $$UID != "0" ] || (echo "ERROR: must be run as normal user" ; exit 1)
+	git tag -s $(release_tag) -m "Chromium $(chrome_ver)"
 
-.PHONY: sign-tarball
-sign-tarball: $(chrome-dist-artifact).asc
-
-.PHONY: sign
-sign: $(rpm-signed) $(chrome-dist-artifact).asc
-
-.PHONY: chown
-chown:
-	chown -R $(SUDO_UID):$(SUDO_GID) $(artifact-dir)
-
-.PHONY: release
-release: $(chrome-dist-artifact).asc $(artifact-dir)/sha265sums.asc
-
-.PHONY: install
-install: release
-	dnf install ./$(chrome-rpm-artifact)
-
+include update-readme-ed-template.mk
 .PHONY: update-readme
 update-readme:
 	cp README.md README.md.bak
@@ -129,10 +58,13 @@ update-readme:
 	@diff --color=always -u README.md.bak README.md || [ $$? = "1" ]
 	@echo
 
-.PHONY: tag-release
-tag-release:
-	@[ $$UID != "0" ] || (echo "ERROR: must be run as normal user" ; exit 1)
-	git tag -s $(release_tag) -m "Chromium $(chrome_ver)"
+include release-json-template.mk
+.PHONY: gitlab-upload-release
+gitlab-upload-release:
+	curl --header 'Content-Type: application/json' \
+	     --header "PRIVATE-TOKEN: $(GITLAB_API_TOKEN)" \
+	     --data "$$release_json_template" \
+	     --request POST $(CI_API_V4_URL)/projects/24/releases
 
 .PHONY: clean
 clean:
@@ -145,5 +77,5 @@ clean:
 	podman rmi -f chrome-build-image || [ $$? = "1" ]
 
 .PHONY: all
-all: $(chrome-rpm-artifact) $(chrome-dist-artifact) $(llvm-dist-artifact)
+all: dev
 
