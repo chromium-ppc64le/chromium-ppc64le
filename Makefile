@@ -7,11 +7,6 @@
 
 include docker-root/common.mk
 
-release_tag := v$(chrome_ver)-$(chrome_rpm_release)
-download_url_base := https://github.com/vddvss/chromium-ppc64le/releases/download
-download_url := $(download_url_base)/$(release_tag)
-
-# Targets
 $(artifact-dir):
 	mkdir -p $@
 

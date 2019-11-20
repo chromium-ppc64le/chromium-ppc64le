@@ -5,11 +5,10 @@
 
 .DEFAULT_GOAL := all
 
-num_threads := 16
+NUM_THREADS ?= 16
+CONCURRENT_LINKS ?= 2
 
 include common.mk
-
-CONCURRENT_LINKS ?= 2
 
 gn_url := https://gn.googlesource.com/gn
 llvm_url := https://github.com/llvm/llvm-project/archive/$(llvm_rev).tar.gz
@@ -116,7 +115,7 @@ $(gn-exe): | gn
 	    CXX=/usr/bin/clang++ \
 	    AR=/usr/bin/ar \
 	    python build/gen.py && \
-	ninja -j $(num_threads) -C out
+	ninja -j $(NUM_THREADS) -C out
 
 ###############################################################################
 # LLVM
@@ -147,7 +146,7 @@ $(llvm-build-dir)/CMakeCache.txt: $(llvm-patched) | $(llvm-build-dir) $(llvm-dir
 	    -DCMAKE_CXX_COMPILER=/usr/bin/clang++
 
 $(clang): $(llvm-build-dir)/CMakeCache.txt
-	ninja -C $(llvm-build-dir) -j $(num_threads)
+	ninja -C $(llvm-build-dir) -j $(NUM_THREADS)
 
 $(llvm-dist-artifact): $(clang) | $(artifact-dir)
 	ninja -C $(llvm-build-dir) install
@@ -202,20 +201,20 @@ $(chrome-args-gn): $(chrome-args-gn-in) \
 
 # This is not used currently, but should work with chrome 79
 $(libdav1d-rebuilt): $(media-rebuild-prereqs) | $(chrome-dir)
-	cd $|/third_party/dav1d && \
+	+cd $|/third_party/dav1d && \
 	./generate_configs.py && \
 	./generate_source.py
 	touch $@
 
 $(ffmpeg-rebuilt): $(media-rebuild-prereqs) | $(chrome-dir)
-	cd $|/third_party/ffmpeg && \
+	+cd $|/third_party/ffmpeg && \
 	./chromium/scripts/build_ffmpeg.py --branding="ChromeOS" linux ppc64 && \
 	./chromium/scripts/generate_gn.py && \
 	./chromium/scripts/copy_config.sh
 	touch $@
 
 $(libvpx-rebuilt): $(media-rebuild-prereqs) $(gn-exe) | $(chrome-dir)
-	cd $|/third_party/libvpx && \
+	+cd $|/third_party/libvpx && \
 	mkdir -p source/config/linux/ppc64 && \
 	./generate_gni.sh
 	touch $@
@@ -228,11 +227,11 @@ $(chrome-configured): $(chrome-args-gn) \
 	touch $@
 
 $(chrome): $(chrome-configured)
-	ninja -C $(chrome-target-dir) -j $(num_threads) \
+	ninja -C $(chrome-target-dir) -j $(NUM_THREADS) \
 	    media chrome chrome_sandbox chromedriver clear_key_cdm
 
 $(chrome-rpm-file): $(chrome)
-	ninja -C $(chrome-target-dir) -j $(num_threads) $(chrome_channel)_rpm
+	ninja -C $(chrome-target-dir) -j $(NUM_THREADS) $(chrome_channel)_rpm
 
 # For the tarball artifact, just extract the files from the RPM, since it only
 # includes the files needed and the binaries are already stripped

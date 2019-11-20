@@ -1,3 +1,7 @@
+release_tag := v$(chrome_ver)-$(chrome_rpm_release)
+download_url_base := https://github.com/vddvss/chromium-ppc64le/releases/download
+download_url := $(download_url_base)/$(release_tag)
+
 # ed script to update the README for a new release
 define update_readme_ed_script :=
 H
@@ -16,5 +20,4 @@ g/latest/s|\[latest\]([^)]\+\.tar\.xz)|[latest]($(download_url)/$(chrome-dist-fi
 w
 endef
 export update_readme_ed_script
-
 
