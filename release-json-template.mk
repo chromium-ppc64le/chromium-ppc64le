@@ -1,3 +1,8 @@
+# Copyright 2019 Colin Samples
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
 define release_json_template :=
 {
     "name": "Chromium $(release_tag)",

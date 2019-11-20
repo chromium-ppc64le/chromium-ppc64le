@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# Copyright 2019 Colin Samples
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 
 echo "<html>"
 echo "<head><title>Index of $1</title>"

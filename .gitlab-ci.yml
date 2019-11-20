@@ -43,8 +43,8 @@ repo:
   script:
     - mkdir -p public/dnf-repo
     - createrepo --retain-old-md 10 -v -u ${CI_JOB_URL}/artifacts/raw/target -o public/dnf-repo target
-    - cd public && ../filelist2html.sh public > index.html
-    - cd public && ../filelist2html.sh public/dnf-repo > dnf-repo/index.html
+    - ./filelist2html.sh public > public/index.html
+    - ./filelist2html.sh public/dnf-repo > public/dnf-repo/index.html
 
   artifacts:
     paths:

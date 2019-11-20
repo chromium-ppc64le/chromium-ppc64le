@@ -34,8 +34,7 @@ gitlab-build: | $(artifact-dir)
 	printenv -0 | xargs -I{} -0 buildah config --env "{}" $$CTRNAME && \
 	buildah run \
 	    --mount=type=bind,source=$(CURDIR)/$|,destination=/workdir/$| \
-	    $$CTRNAME -- /usr/bin/bash -c \
-	    'make -j16 && make clean-chrome && make -j16 UNGOOGLED=1'
+	    $$CTRNAME -- /usr/bin/make -j16
 
 .PHONY: tag-release
 tag-release:

@@ -1,5 +1,10 @@
+# Copyright 2019 Colin Samples
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
 release_tag := v$(chrome_ver)-$(chrome_rpm_release)
-download_url_base := https://github.com/vddvss/chromium-ppc64le/releases/download
+download_url_base := https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download
 download_url := $(download_url_base)/$(release_tag)
 
 # ed script to update the README for a new release
