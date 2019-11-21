@@ -65,10 +65,10 @@ $(gn-exe): | gn
 # LLVM
 ###############################################################################
 $(llvm-archive):
-	wget -q $(llvm_url)
+	wget $(llvm_url)
 
-$(llvm-dir): $(llvm-archive)
-	tar xf $<
+$(llvm-dir): | $(llvm-archive)
+	tar xzf $|
 
 ###############################################################################
 # Chrome
