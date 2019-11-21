@@ -3,6 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+NUM_THREADS ?= 16
+CONCURRENT_LINKS ?= 2
+USE_LTO ?= false
+
 artifact-dir := target
 
 # llvm_rev is from $(chrome-dir)/tools/clang/scripts/update.py
@@ -24,7 +28,4 @@ chrome-rpm-file-name := $(chrome-file-name-base).ppc64le.rpm
 chrome-dist-file-name := $(chrome-file-name-base).tar.xz
 chrome-rpm-artifact := $(artifact-dir)/$(chrome-rpm-file-name)
 chrome-dist-artifact := $(artifact-dir)/$(chrome-dist-file-name)
-
-llvm-dist-dir := clang+lld+llvm-$(llvm_rev)-ppc64le
-llvm-dist-artifact := $(artifact-dir)/$(llvm-dist-dir).tar.xz
 

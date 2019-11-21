@@ -3,10 +3,13 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-include common.mk
-
 .DEFAULT_GOAL := all
 
+include common.mk
+
+###############################################################################
+# Patches
+###############################################################################
 ifdef UNGOOGLED
 patch-series := \
     patches/chrome/chromium-ppc64le-patches-quilt/patches/series \
@@ -19,9 +22,19 @@ patch-series := \
 endif
 
 ###############################################################################
+# Environment
+###############################################################################
+export CC := $(realpath $(llvm-dir)/bin/clang)
+export CXX := $(realpath $(llvm-dir)/bin/clang++)
+export AR := $(realpath $(llvm-dir)/bin/llvm-ar)
+export NM := $(realpath $(llvm-dir)/bin/llvm-nm)
+
+ORIG_PATH := $(PATH)
+export PATH := $(gn-bin-dir):$(llvm-dir)/bin:$(ORIG_PATH)
+
+###############################################################################
 # Targets
 ###############################################################################
-
 target := out/Release
 target-dir := $(chrome-dir)/$(target)
 args-gn := $(target-dir)/args.gn
@@ -53,6 +66,9 @@ media-rebuild-prereqs := $(clang) $(patched) $(ug-chrome-domain-subbed)
 ###############################################################################
 # Rules
 ###############################################################################
+$(artifact-dir):
+	mkdir -p $@
+
 $(target-dir): | $(chrome-dir)
 	mkdir -p $@
 
@@ -85,7 +101,7 @@ $(ug-chrome-domain-subbed): $(patched) | $(chrome-dir)
 endif
 
 $(args-gn): $(args-gn-in) $(ug-args-gn-extra) | $(target-dir)
-	sed -e 's|@@CLANG_BASE_PATH@@|$(llvm-build-dir)|g' \
+	sed -e 's|@@CLANG_BASE_PATH@@|$(llvm-dir)|g' \
 	    -e 's|@@CONCURRENT_LINKS@@|$(CONCURRENT_LINKS)|g' \
 	    -e 's|@@USE_LTO@@|$(USE_LTO)|g' \
 	    $^ > $@
