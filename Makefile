@@ -34,7 +34,7 @@ gitlab-build: | $(artifact-dir)
 	printenv -0 | xargs -I{} -0 buildah config --env "{}" $$CTRNAME && \
 	buildah run \
 	    --mount=type=bind,source=$(CURDIR)/$|,destination=/workdir/$| \
-	    $$CTRNAME -- /usr/bin/make -j16
+	    $$CTRNAME -- /usr/bin/make -j16 USE_LTO=true
 
 .PHONY: tag-release
 tag-release:

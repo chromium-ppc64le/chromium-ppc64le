@@ -8,19 +8,14 @@ include common.mk
 .DEFAULT_GOAL := all
 
 ifdef UNGOOGLED
-    dist-prefix := ungoogled-
-    rpm-artifact := $(ungoogled-chrome-rpm-artifact)
-    dist-artifact := $(ungoogled-chrome-dist-artifact)
-    patch-series := \
-        patches/chrome/chromium-ppc64le-patches-quilt/patches/series \
-        patches/chrome/series.ungoogled \
-        patches/chrome/series.extra
+patch-series := \
+    patches/chrome/chromium-ppc64le-patches-quilt/patches/series \
+    patches/chrome/series.ungoogled \
+    patches/chrome/series.extra
 else
-    rpm-artifact := $(chrome-rpm-artifact)
-    dist-artifact := $(chrome-dist-artifact)
-    patch-series := \
-        patches/chrome/chromium-ppc64le-patches-quilt/patches/series \
-        patches/chrome/series.extra
+patch-series := \
+    patches/chrome/chromium-ppc64le-patches-quilt/patches/series \
+    patches/chrome/series.extra
 endif
 
 ###############################################################################
@@ -92,6 +87,7 @@ endif
 $(args-gn): $(args-gn-in) $(ug-args-gn-extra) | $(target-dir)
 	sed -e 's|@@CLANG_BASE_PATH@@|$(llvm-build-dir)|g' \
 	    -e 's|@@CONCURRENT_LINKS@@|$(CONCURRENT_LINKS)|g' \
+	    -e 's|@@USE_LTO@@|$(USE_LTO)|g' \
 	    $^ > $@
 
 # This is not used currently, but should work with chrome 79
@@ -135,10 +131,10 @@ $(dist-file): $(rpm-file)
 	mv opt/chromium.org/chromium $(chrome-file-name-base)
 	tar cJf $@ $(chrome-file-name-base)
 
-$(rpm-artifact): $(rpm-file) $(dist-file) | $(artifact-dir)
+$(chrome-rpm-artifact): $(rpm-file) $(dist-file) | $(artifact-dir)
 	mv $< $@
 
-$(dist-artifact): $(dist-file) | $(artifact-dir)
+$(chrome-dist-artifact): $(dist-file) | $(artifact-dir)
 	mv $< $@
 
 .PHONY: clean-patches

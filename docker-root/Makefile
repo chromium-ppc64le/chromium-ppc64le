@@ -7,6 +7,7 @@
 
 export NUM_THREADS ?= 16
 export CONCURRENT_LINKS ?= 2
+export USE_LTO ?= false
 
 include common.mk
 
