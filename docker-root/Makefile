@@ -67,8 +67,8 @@ $(gn-exe): | gn
 $(llvm-archive):
 	wget -q $(llvm_url)
 
-$(llvm-dir): | $(llvm-archive)
-	tar xzf $|
+$(llvm-dir): $(llvm-archive)
+	tar xf $<
 
 ###############################################################################
 # Chrome
