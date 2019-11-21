@@ -26,7 +26,7 @@ build:
       - target/*.tar*
       - target/*.rpm
 
-repo:
+public:
   stage: deploy
   dependencies:
     - build
@@ -45,6 +45,7 @@ repo:
     - createrepo --retain-old-md 10 -v -u ${CI_JOB_URL}/artifacts/raw/target -o public/dnf-repo target
     - ./filelist2html.sh public > public/index.html
     - ./filelist2html.sh public/dnf-repo > public/dnf-repo/index.html
+    - ./filelist2html.sh public/dnf-repo/repodata > public/dnf-repo/repodata/index.html
 
   artifacts:
     paths:
