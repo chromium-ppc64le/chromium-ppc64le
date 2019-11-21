@@ -173,10 +173,10 @@ retouch-chrome-prereqs:
           $(libvpx-rebuilt)
 
 .PHONY: rpm
-rpm: $(rpm-artifact)
+rpm: $(chrome-rpm-artifact)
 
 .PHONY: dist
-dist: $(dist-artifact)
+dist: $(chrome-dist-artifact)
 
 .PHONY: all
 all: rpm dist
