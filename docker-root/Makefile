@@ -65,7 +65,7 @@ $(gn-exe): | gn
 # LLVM
 ###############################################################################
 $(llvm-archive):
-	wget $(llvm_url)
+	wget -q $(llvm_url)
 
 $(llvm-dir): | $(llvm-archive)
 	tar xzf $|
