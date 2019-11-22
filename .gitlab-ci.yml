@@ -42,6 +42,7 @@ pages:testing:
     - ppc64le
 
   script:
+    - mkdir public
     - cp -R repo public/dnf-repo-testing
     - ./filelist2html.sh public > public/index.html
     - ./filelist2html.sh public/dnf-repo-testing > public/dnf-repo-testing/index.html
@@ -67,6 +68,7 @@ pages:main:
     - ppc64le
 
   script:
+    - mkdir public
     - cp -R repo public/dnf-repo
     - cp -R repo public/dnf-repo-testing
     - ./filelist2html.sh public > public/index.html
