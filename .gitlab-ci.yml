@@ -1,9 +1,15 @@
 stages:
+  - prepare
   - build
   - package
   - deploy
 
+variables:
+  BUILD_CONTAINER: $CI_REGISTRY_IMAGE/chromium-build-image:$CI_COMMIT_SHORT_SHA
+  GIT_SUBMODULE_STRATEGY: recursive
+
 .ppc-build-base:
+  image: $BUILD_CONTAINER
   timeout: 6h
 
   only:
@@ -12,36 +18,50 @@ stages:
 
   tags:
     - ppc64le
+    - docker
+
+container:
+  extends: .ppc-build-base
+  image: fedora:latest
+  stage: prepare
+
+  variables:
+    _BUILDAH_STARTED_IN_USERNS: ""
+    BUILDAH_FORMAT: docker
+    BUILDAH_ISOLATION: chroot
+
+  script:
+    - dnf install
+        --setopt=install_weak_deps=False
+        --disablerepo="*modular*"
+        -y buildah
+    - sed -e 's/^driver =.*/driver = "vfs"/'
+          -e '/^mountopt =.*/d'
+          -i /etc/containers/storage.conf
+    - buildah login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - buildah bud -t $BUILD_CONTAINER .
+    - buildah push $BUILD_CONTAINER
 
 build:
   extends: .ppc-build-base
   stage: build
 
-  variables:
-    GIT_SUBMODULE_STRATEGY: recursive
-    _BUILDAH_STARTED_IN_USERNS: ""
-    BUILDAH_ISOLATION: chroot
-
   script:
-    - dnf install -y findutils buildah make
-    - sed -e 's/^driver =.*/driver = "vfs"/'
-          -e '/^mountopt =.*/d'
-          -i /etc/containers/storage.conf
-    - make gitlab-build
+    - make -C docker-root -j16
     # TODO: Once https://gitlab.com/gitlab-org/gitlab/issues/22638 is fixed,
     # just pass the variable
     - echo "export ARTIFACTS_URL=${CI_JOB_URL}/artifacts/raw/target" > artifacts_url.sh
 
   artifacts:
     paths:
-      - target/*.tar*
-      - target/*.rpm
+      - docker-root/target/*.tar*
+      - docker-root/target/*.rpm
       - artifacts_url.sh
 
   cache:
     key: chromium-build-cache
     paths:
-      - .ccache
+      - docker-root/.ccache
 
 create-repo:
   extends: .ppc-build-base
@@ -50,11 +70,10 @@ create-repo:
     - build
 
   script:
-    - dnf install -y findutils createrepo_c
     - mkdir -p repo/{chromium,chromium-testing}
     - . artifacts_url.sh
-    - createrepo -v -u ${ARTIFACTS_URL} -o repo/chromium target
-    - createrepo -v -u ${ARTIFACTS_URL} -o repo/chromium-testing target
+    - createrepo -v -u ${ARTIFACTS_URL} -o repo/chromium docker-root/target
+    - createrepo -v -u ${ARTIFACTS_URL} -o repo/chromium-testing docker-root/target
 
   artifacts:
     paths:
@@ -62,6 +81,9 @@ create-repo:
 
 .repo-deploy-base: &repo-deploy-base
   stage: deploy
+
+  variables:
+    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
 
   only:
     - tags

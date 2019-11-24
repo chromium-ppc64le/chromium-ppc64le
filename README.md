@@ -5,6 +5,15 @@ along with the build scripts.
 
 These are largely the same as upstream's. For an alternative, you can use https://github.com/leo-lb/ungoogled-chromium
 
+# Installation
+
+The easiest way to install is to add the repo...
+
+```
+sudo dnf install dnf-plugins-core
+sudo dnf config-manager --add-repo=https://github.com/vddvss/chromium-ppc64le/raw/master/chromium-ppc64le.repo
+```
+
 ## Quick download
 
 <!-- CURRENT TABLE -->

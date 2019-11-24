@@ -33,7 +33,9 @@ ORIG_PATH := $(PATH)
 export PATH := $(gn-bin-dir):$(llvm-dir)/bin:$(ORIG_PATH)
 
 export CCACHE_BASEDIR := $(CURDIR)
-export CCACHE_DIR := $(CURDIR)/$(artifact-dir)/.ccache
+export CCACHE_DIR := $(CURDIR)/.ccache
+
+export XZ_OPT := -T$(NUM_THREADS) -9
 
 ###############################################################################
 # Targets

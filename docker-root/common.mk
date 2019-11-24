@@ -5,7 +5,7 @@
 
 NUM_THREADS ?= 16
 CONCURRENT_LINKS ?= 2
-USE_LTO ?= false
+USE_LTO ?= true
 
 artifact-dir := target
 

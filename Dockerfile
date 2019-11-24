@@ -10,10 +10,10 @@ RUN dnf -y update && \
         alsa-lib-devel \
         atk-devel \
         bison \
-        buildah \
         ccache \
         clang \
         cmake \
+        createrepo_c \
         cups-devel \
         dbus-devel \
         elfutils \
@@ -46,8 +46,6 @@ RUN dnf -y update && \
 
 RUN mkdir -p /workdir
 WORKDIR /workdir
-
-COPY docker-root /workdir
 
 CMD ["/usr/bin/make", "-w", "-j16"]
 

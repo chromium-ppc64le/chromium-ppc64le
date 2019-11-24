@@ -1,7 +1,7 @@
 # Clang
 custom_toolchain="//build/toolchain/linux/unbundle:default"
 host_toolchain="//build/toolchain/linux/unbundle:default"
-command_launcher="/usr/bin/ccache"
+cc_wrapper="/usr/bin/ccache"
 is_clang=true
 clang_base_path="@@CLANG_BASE_PATH@@"
 clang_use_chrome_plugins=false

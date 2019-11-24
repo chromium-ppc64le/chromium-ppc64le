@@ -53,14 +53,12 @@ export LDFLAGS += -lm
 gn:
 	git clone $(gn_url)
 
+$(gn-exe): export CC := /usr/bin/clang
+$(gn-exe): export CXX := /usr/bin/clang++
 $(gn-exe): | gn
 	cd gn && \
-	env CC=/usr/bin/clang \
-	    CXX=/usr/bin/clang++ \
-	    AR=/usr/bin/ar \
-	    python build/gen.py && \
-	ninja -j $(NUM_THREADS) -C out && \
-	out/gn_unittests
+	python build/gen.py && \
+	ninja -j $(NUM_THREADS) -C out
 
 ###############################################################################
 # LLVM
