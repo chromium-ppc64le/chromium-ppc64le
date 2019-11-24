@@ -13,7 +13,7 @@ include common.mk
 gn-bin-dir := $(CURDIR)/gn/out
 gn-exe := $(gn-bin-dir)/gn
 
-llvm-archive := llvm-$(llvm_rev)-ppc64le.tar.gz
+llvm-archive := llvm-$(llvm_rev)-ppc64le.tar.zstd
 llvm-dir := $(CURDIR)/llvm-$(llvm_rev)-ppc64le
 
 chrome-archive := chromium-$(chrome_ver).tar.xz
@@ -27,7 +27,7 @@ export chrome-dir clang llvm-dir gn-exe gn-bin-dir
 # External Assets
 ###############################################################################
 gn_url := https://gn.googlesource.com/gn
-llvm_url := https://gitlab.com/chromium-ppc64le/llvm-builds/-/jobs/357854783/artifacts/raw/target/$(llvm-archive)
+llvm_url := https://github.com/chromium-ppc64le/llvm-builds/releases/download/v$(llvm_rev)/$(llvm-archive)
 chrome_url := \
     https://commondatastorage.googleapis.com/chromium-browser-official/$(chrome-archive)
 
@@ -68,7 +68,7 @@ $(llvm-archive):
 	wget -q $(llvm_url)
 
 $(llvm-dir): | $(llvm-archive)
-	tar xzf $|
+	tar --zstd -xf $|
 
 ###############################################################################
 # Chrome

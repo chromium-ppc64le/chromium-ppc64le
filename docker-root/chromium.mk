@@ -32,6 +32,9 @@ export NM := $(realpath $(llvm-dir)/bin/llvm-nm)
 ORIG_PATH := $(PATH)
 export PATH := $(gn-bin-dir):$(llvm-dir)/bin:$(ORIG_PATH)
 
+export CCACHE_BASEDIR := $(CURDIR)
+export CCACHE_DIR := $(CURDIR)/.ccache
+
 ###############################################################################
 # Targets
 ###############################################################################

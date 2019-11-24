@@ -11,6 +11,7 @@ RUN dnf -y update && \
         atk-devel \
         bison \
         buildah \
+        ccache \
         clang \
         cmake \
         cups-devel \

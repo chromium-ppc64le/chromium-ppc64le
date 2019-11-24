@@ -1,10 +1,10 @@
 stages:
   - build
+  - package
   - deploy
 
-build:
-  variables:
-    GIT_SUBMODULE_STRATEGY: recursive
+.ppc-build-base:
+  timeout: 6h
 
   only:
     - tags
@@ -13,72 +13,65 @@ build:
   tags:
     - ppc64le
 
+build:
+  extends: .ppc-build-base
   stage: build
 
-  timeout: 6h
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
 
   script:
-    - dnf install -y findutils createrepo_c gawk
+    - dnf install -y findutils
     - make gitlab-build
-    - mkdir -p repo
-    - createrepo -v -u ${CI_JOB_URL}/artifacts/raw/target -o repo target
+    # TODO: Once https://gitlab.com/gitlab-org/gitlab/issues/22638 is fixed,
+    # just pass the variable
+    - echo "export ARTIFACTS_URL=${CI_JOB_URL}/artifacts/raw/target" > artifacts_url.sh
 
   artifacts:
     paths:
       - target/*.tar*
       - target/*.rpm
-      - repo
+      - artifacts_url.sh
 
-pages:testing:
-  stage: deploy
+  cache:
+    key: chromium-build-cache
+    paths:
+      - .ccache
+
+create-repo:
+  extends: .ppc-build-base
+  stage: package
   dependencies:
     - build
+
+  script:
+    - dnf install -y findutils createrepo_c
+    - mkdir -p repo/{chromium,chromium-testing}
+    - . artifacts_url.sh
+    - createrepo -v -u ${ARTIFACTS_URL} -o repo/chromium target
+    - createrepo -v -u ${ARTIFACTS_URL} -o repo/chromium-testing target
+
+  artifacts:
+    paths:
+      - repo/
+
+.repo-deploy-base: &repo-deploy-base
+  stage: deploy
 
   only:
     - tags
     - web
 
-  tags:
-    - ppc64le
+  trigger:
+    strategy: depend
 
-  script:
-    - mkdir public
-    - cp -R repo public/dnf-repo-testing
-    - ./filelist2html.sh public > public/index.html
-    - ./filelist2html.sh public/dnf-repo-testing > public/dnf-repo-testing/index.html
-    - ./filelist2html.sh public/dnf-repo-testing/repodata > public/dnf-repo-testing/repodata/index.html
+repo-deploy:
+  <<: *repo-deploy-base
+  trigger:
+    project: chromium-ppc64le/dnf/chromium
 
-  artifacts:
-    paths:
-      - public
-
-
-pages:main:
-  stage: deploy
-  dependencies:
-    - build
-
-  only:
-    - tags
-    - web
-
-  when: manual
-
-  tags:
-    - ppc64le
-
-  script:
-    - mkdir public
-    - cp -R repo public/dnf-repo
-    - cp -R repo public/dnf-repo-testing
-    - ./filelist2html.sh public > public/index.html
-    - ./filelist2html.sh public/dnf-repo > public/dnf-repo/index.html
-    - ./filelist2html.sh public/dnf-repo/repodata > public/dnf-repo/repodata/index.html
-    - ./filelist2html.sh public > public/index.html
-    - ./filelist2html.sh public/dnf-repo-testing > public/dnf-repo-testing/index.html
-    - ./filelist2html.sh public/dnf-repo-testing/repodata > public/dnf-repo-testing/repodata/index.html
-
-  artifacts:
-    paths:
-      - public
+testing-repo-deploy:
+  <<: *repo-deploy-base
+  trigger:
+    project: chromium-ppc64le/dnf/chromium-testing
 
