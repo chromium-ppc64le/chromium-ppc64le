@@ -19,9 +19,14 @@ build:
 
   variables:
     GIT_SUBMODULE_STRATEGY: recursive
+    _BUILDAH_STARTED_IN_USERNS: ""
+    BUILDAH_ISOLATION: chroot
 
   script:
-    - dnf install -y findutils
+    - dnf install -y findutils buildah make
+    - sed -e 's/^driver =.*/driver = "vfs"/'
+          -e '/^mountopt =.*/d'
+          -i /etc/containers/storage.conf
     - make gitlab-build
     # TODO: Once https://gitlab.com/gitlab-org/gitlab/issues/22638 is fixed,
     # just pass the variable

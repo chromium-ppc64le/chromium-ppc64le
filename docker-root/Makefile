@@ -59,7 +59,8 @@ $(gn-exe): | gn
 	    CXX=/usr/bin/clang++ \
 	    AR=/usr/bin/ar \
 	    python build/gen.py && \
-	ninja -j $(NUM_THREADS) -C out
+	ninja -j $(NUM_THREADS) -C out && \
+	out/gn_unittests
 
 ###############################################################################
 # LLVM
