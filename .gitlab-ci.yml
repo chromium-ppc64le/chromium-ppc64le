@@ -29,6 +29,7 @@ container:
     _BUILDAH_STARTED_IN_USERNS: ""
     BUILDAH_FORMAT: docker
     BUILDAH_ISOLATION: chroot
+    GIT_SUBMODULE_STRATEGY: none
 
   script:
     - dnf install
@@ -50,12 +51,13 @@ build:
     - make -C docker-root -j16
     # TODO: Once https://gitlab.com/gitlab-org/gitlab/issues/22638 is fixed,
     # just pass the variable
-    - echo "export ARTIFACTS_URL=${CI_JOB_URL}/artifacts/raw/target" > artifacts_url.sh
+    - echo "export ARTIFACTS_URL=$CI_JOB_URL/artifacts/raw/target" > artifacts_url.sh
 
   artifacts:
     paths:
       - docker-root/target/*.tar*
       - docker-root/target/*.rpm
+      - docker-root/ccache.log
       - artifacts_url.sh
 
   cache:
@@ -69,11 +71,14 @@ create-repo:
   dependencies:
     - build
 
+  variables:
+    GIT_STRATEGY: none
+
   script:
     - mkdir -p repo/{chromium,chromium-testing}
     - . artifacts_url.sh
-    - createrepo -v -u ${ARTIFACTS_URL} -o repo/chromium docker-root/target
-    - createrepo -v -u ${ARTIFACTS_URL} -o repo/chromium-testing docker-root/target
+    - createrepo -v -u $ARTIFACTS_URL -o repo/chromium docker-root/target
+    - createrepo -v -u $ARTIFACTS_URL -o repo/chromium-testing docker-root/target
 
   artifacts:
     paths:
@@ -84,14 +89,14 @@ create-repo:
 
   variables:
     UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
+    UPSTREAM_PROJECT_ID: $CI_PROJECT_ID
 
   only:
     - tags
     - web
 
-  trigger:
-    strategy: depend
-
+# TODO: after https://gitlab.com/gitlab-org/gitlab/issues/10876 is resolved, add
+# strategy: depend to both cases
 repo-deploy:
   <<: *repo-deploy-base
   trigger:
@@ -101,4 +106,5 @@ testing-repo-deploy:
   <<: *repo-deploy-base
   trigger:
     project: chromium-ppc64le/dnf/chromium-testing
+    strategy: depend
 

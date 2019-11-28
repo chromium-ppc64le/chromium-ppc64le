@@ -55,9 +55,13 @@ and at least 8 cores.
 
 * [Patches](https://github.com/shawnanastasio/chromium_power) to enable building
   on PPC64LE
-* [Patch](docker-root/enable-rpm-build.patch) to enable RPM building for PPC64LE
-* [Patch](docker-root/enable-vaapi.patch) to enable GPU-accelerated video
-  decoding
+* [Patch](docker-root/patches/chrome/enable-rpm-build.patch) to enable RPM
+  building for PPC64LE
+* [Patch](docker-root/patches/chrome/enable-vaapi.patch) to enable
+  GPU-accelerated video decoding
+* [Patch](docker-root/patches/chrome/change-user-agent.patch) to change the
+  browser's user agent string to be the same as the official Chrome build on
+  Linux, which helps reduce the browser's fingerprinting surface
 
 ### Features enabled
 

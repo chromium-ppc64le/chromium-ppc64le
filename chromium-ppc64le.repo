@@ -1,12 +1,12 @@
 [chromium-ppc64le]
 name=Chromium PPC64LE
-baseurl=https://chromium-ppc64le.gitlab.io/chromium-ppc64le/dnf/chromium
+baseurl=https://chromium-ppc64le.gitlab.io/dnf/chromium
 enabled=1
 gpgcheck=0
 
 [chromium-ppc64le-testing]
 name=Chromium PPC64LE - Updates Testing
-baseurl=https://chromium-ppc64le.gitlab.io/chromium-ppc64le/dnf/chromium-testing
+baseurl=https://chromium-ppc64le.gitlab.io/dnf/chromium-testing
 enabled=0
 gpgcheck=0
 

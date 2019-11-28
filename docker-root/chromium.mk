@@ -34,6 +34,11 @@ export PATH := $(gn-bin-dir):$(llvm-dir)/bin:$(ORIG_PATH)
 
 export CCACHE_BASEDIR := $(CURDIR)
 export CCACHE_DIR := $(CURDIR)/.ccache
+export CCACHE_COMPILERCHECK := content
+export CCACHE_SLOPPINESS := file_macro,time_macros
+export CCACHE_MAXSIZE := 20G
+export CCACHE_NLEVELS := 3
+export CCACHE_LOGFILE := $(CURDIR)/ccache.log
 
 export XZ_OPT := -T$(NUM_THREADS) -9
 
@@ -141,6 +146,7 @@ $(configured): $(args-gn) \
 $(chrome): $(configured)
 	ninja -C $(target-dir) -j $(NUM_THREADS) \
 	    media chrome chrome_sandbox chromedriver clear_key_cdm
+	ccache --show-stats
 
 $(rpm-file): $(chrome)
 	ninja -C $(target-dir) -j $(NUM_THREADS) $(chrome_channel)_rpm
