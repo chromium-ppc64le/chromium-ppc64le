@@ -21,7 +21,7 @@ chrome-dir := $(CURDIR)/chromium-$(chrome_ver)
 
 chrome-mk-prereqs := $(gn-exe) $(llvm-dir) $(chrome-dir)
 
-export chrome-dir clang llvm-dir gn-exe gn-bin-dir
+export chrome-dir llvm-dir gn-exe gn-bin-dir
 
 ###############################################################################
 # External Assets
@@ -40,7 +40,11 @@ ignored_warnings := -Wno-shorten-64-to-32 \
 		    -Wno-unused-function \
 		    -Wno-unused-variable \
 		    -Wno-implicit-float-conversion \
-		    -Wno-unused-private-field
+		    -Wno-unused-private-field \
+		    -Wno-string-plus-int \
+		    -Wno-constant-conversion \
+		    -Wno-incompatible-pointer-types-discards-qualifiers \
+		    -Wno-unused-label
 opt_flags := -mcpu=power9 -mtune=power9
 
 export CFLAGS ?= $(ignored_warnings) $(opt_flags)
@@ -85,6 +89,10 @@ standard-chromium: | $(chrome-mk-prereqs)
 .PHONY: ungoogled-chromium
 ungoogled-chromium: | $(chrome-mk-prereqs)
 	$(MAKE) -f chromium.mk UNGOOGLED=1
+
+.PHONY: chromium.%
+chromium.%: | $(chrome-mk-prereqs)
+	$(MAKE) -f chromium.mk $*
 
 .PHONY: chromium
 chromium: | $(chrome-mk-prereqs)

@@ -17,7 +17,7 @@ build-root:
 # in ./build-root and opens a terminal in the container
 .PHONY: dev
 dev: | $(artifact-dir) build-root
-	cp -R docker-root/* build-root
+	cp -R docker-root/ build-root/
 	podman build -t chrome-build-image .
 	podman run -it \
 	    --name=chrome-builder \

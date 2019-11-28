@@ -33,14 +33,21 @@ ORIG_PATH := $(PATH)
 export PATH := $(gn-bin-dir):$(llvm-dir)/bin:$(ORIG_PATH)
 
 export CCACHE_BASEDIR := $(CURDIR)
-export CCACHE_DIR := $(CURDIR)/.ccache
 export CCACHE_COMPILERCHECK := content
 export CCACHE_SLOPPINESS := file_macro,time_macros
 export CCACHE_MAXSIZE := 20G
 export CCACHE_NLEVELS := 3
+export CCACHE_DIR := $(CURDIR)/.ccache
+ifdef LOG_CCACHE
+ifdef UNGOOGLED
+export CCACHE_LOGFILE := $(CURDIR)/ccache-ug.log
+else
 export CCACHE_LOGFILE := $(CURDIR)/ccache.log
+endif
+ccache-log-compressed := $(CCACHE_LOGFILE).xz
+endif
 
-export XZ_OPT := -T$(NUM_THREADS) -9
+export XZ_OPT := -9e -T$(NUM_THREADS)
 
 ###############################################################################
 # Targets
@@ -71,7 +78,7 @@ ug-chrome-domain-subbed := ug-chrome-domain-subbed.stamp
 ug-chrome-extra-args-applied := ug-chrome-extra-args-applied.stamp
 endif
 
-media-rebuild-prereqs := $(clang) $(patched) $(ug-chrome-domain-subbed)
+media-rebuild-prereqs := $(patched) $(ug-chrome-domain-subbed)
 
 ###############################################################################
 # Rules
@@ -123,11 +130,13 @@ $(libdav1d-rebuilt): $(media-rebuild-prereqs) | $(chrome-dir)
 	./generate_source.py
 	touch $@
 
+$(ffmpeg-rebuilt): export ECFLAGS := $(CFLAGS)
 $(ffmpeg-rebuilt): $(media-rebuild-prereqs) | $(chrome-dir)
 	+cd $|/third_party/ffmpeg && \
 	./chromium/scripts/build_ffmpeg.py --branding="ChromeOS" linux ppc64 && \
 	./chromium/scripts/generate_gn.py && \
 	./chromium/scripts/copy_config.sh
+	ccache --show-stats
 	touch $@
 
 $(libvpx-rebuilt): $(media-rebuild-prereqs) $(gn-exe) | $(chrome-dir)
@@ -138,8 +147,8 @@ $(libvpx-rebuilt): $(media-rebuild-prereqs) $(gn-exe) | $(chrome-dir)
 
 $(configured): $(args-gn) \
                $(ffmpeg-rebuilt) \
-	           $(libvpx-rebuilt) \
-	           | $(gn-exe)
+	       $(libvpx-rebuilt) \
+	       | $(gn-exe)
 	gn gen --root=$(chrome-dir) $(target-dir)
 	touch $@
 
@@ -147,6 +156,11 @@ $(chrome): $(configured)
 	ninja -C $(target-dir) -j $(NUM_THREADS) \
 	    media chrome chrome_sandbox chromedriver clear_key_cdm
 	ccache --show-stats
+
+ifdef LOG_CCACHE
+$(ccache-log-compressed): $(chrome)
+	xz $(CCACHE_LOGFILE)
+endif
 
 $(rpm-file): $(chrome)
 	ninja -C $(target-dir) -j $(NUM_THREADS) $(chrome_channel)_rpm
@@ -161,7 +175,7 @@ $(dist-file): $(rpm-file)
 $(chrome-rpm-artifact): $(rpm-file) $(dist-file) | $(artifact-dir)
 	mv $< $@
 
-$(chrome-dist-artifact): $(dist-file) | $(artifact-dir)
+$(chrome-dist-artifact): $(dist-file) | $(artifact-dir) $(ccache-log-compressed)
 	mv $< $@
 
 .PHONY: clean-patches
@@ -197,7 +211,7 @@ retouch-chrome-prereqs:
 	      $(args-gn) \
 	      $(libdav1d-rebuilt) \
 	      $(ffmpeg-rebuilt) \
-          $(libvpx-rebuilt)
+	      $(libvpx-rebuilt)
 
 .PHONY: rpm
 rpm: $(chrome-rpm-artifact)

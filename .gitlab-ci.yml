@@ -5,7 +5,7 @@ stages:
   - deploy
 
 variables:
-  BUILD_CONTAINER: $CI_REGISTRY_IMAGE/chromium-build-image:$CI_COMMIT_SHORT_SHA
+  BUILD_CONTAINER: $CI_REGISTRY_IMAGE/chromium-build-image:$CI_COMMIT_REF_NAME
   GIT_SUBMODULE_STRATEGY: recursive
 
 .ppc-build-base:
@@ -57,7 +57,7 @@ build:
     paths:
       - docker-root/target/*.tar*
       - docker-root/target/*.rpm
-      - docker-root/ccache.log
+      - docker-root/ccache*xz
       - artifacts_url.sh
 
   cache:
@@ -95,12 +95,25 @@ create-repo:
     - tags
     - web
 
-# TODO: after https://gitlab.com/gitlab-org/gitlab/issues/10876 is resolved, add
-# strategy: depend to both cases
+# TODO: after https://gitlab.com/gitlab-org/gitlab/issues/10876 is resolved, use
+# `trigger:` in both cases
 repo-deploy:
-  <<: *repo-deploy-base
-  trigger:
-    project: chromium-ppc64le/dnf/chromium
+  extends: .ppc-build-base
+  stage: deploy
+
+  dependencies:
+    - create-repo
+
+  variables:
+    GIT_STRATEGY: none
+
+  script:
+    - curl -s --request POST
+           --form token=$CI_JOB_TOKEN
+           --form ref=master
+           --form "variables[UPSTREAM_BRANCH]=$CI_COMMIT_REF_NAME"
+           --form "variables[UPSTREAM_PROJECT_ID]=$CI_PROJECT_ID"
+           $CI_API_V4_URL/projects/15569783/trigger/pipeline
 
 testing-repo-deploy:
   <<: *repo-deploy-base

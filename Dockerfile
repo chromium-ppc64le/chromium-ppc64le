@@ -12,7 +12,6 @@ RUN dnf -y update && \
         bison \
         ccache \
         clang \
-        cmake \
         createrepo_c \
         cups-devel \
         dbus-devel \

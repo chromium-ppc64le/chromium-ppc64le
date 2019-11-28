@@ -1,0 +1,15 @@
+--- chromium-78.0.3904.108.orig/third_party/ffmpeg/chromium/scripts/build_ffmpeg.py
++++ chromium-78.0.3904.108/third_party/ffmpeg/chromium/scripts/build_ffmpeg.py
+@@ -797,9 +797,9 @@ def ConfigureAndBuild(target_arch, targe
+   if 'win' not in target_os:
+     configure_flags['Common'].extend([
+         '--enable-pic',
+-        '--cc=clang',
+-        '--cxx=clang++',
+-        '--ld=clang',
++        '--cc=ccache %s' % os.environ['CC'],
++        '--cxx=ccache %s' % os.environ['CXX'],
++        '--ld=ccache %s' % os.environ['CC'],
+     ])
+ 
+     # Clang Linux will use the first 'ld' it finds on the path, which will
