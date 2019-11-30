@@ -26,16 +26,6 @@ dev: | $(artifact-dir) build-root
 	    --volume=$(CURDIR)/$(artifact-dir):/workdir/$(artifact-dir):z \
 	    chrome-build-image /usr/bin/bash
 
-.PHONY: gitlab-build
-gitlab-build: | $(artifact-dir)
-	buildah version
-	buildah bud -t chrome-build-image . && \
-	CTRNAME=$$(buildah from chrome-build-image) && \
-	printenv -0 | xargs -I{} -0 buildah config --env "{}" $$CTRNAME && \
-	buildah run \
-	    --mount=type=bind,source=$(CURDIR)/$|,destination=/workdir/$| \
-	    $$CTRNAME -- /usr/bin/make -j16 USE_LTO=true
-
 .PHONY: tag-release
 tag-release:
 	@[ $$UID != "0" ] || (echo "ERROR: must be run as normal user" ; exit 1)

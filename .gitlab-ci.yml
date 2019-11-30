@@ -1,5 +1,11 @@
+# Copyright 2019 Colin Samples
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
 stages:
-  - prepare
+  - check-container
+  - build-container
   - build
   - package
   - deploy
@@ -10,7 +16,7 @@ variables:
 
 .ppc-build-base:
   image: $BUILD_CONTAINER
-  timeout: 6h
+  timeout: 16h
 
   only:
     - tags
@@ -20,10 +26,31 @@ variables:
     - ppc64le
     - docker
 
-container:
+#
+# Prepare
+#
+
+# This checks to see if the build container exists; if it doesn't the
+# `on_failure` rule under `build-container` will trigger a build of the
+# container. A build of the container can also be triggered by setting the
+# environment variable REBUILD_CONTAINER.
+check-container:
   extends: .ppc-build-base
+  stage: check-container
+
+  variables:
+    GIT_STRATEGY: none
+
+  script: /usr/bin/true
+
+.build-container-base:
+  #extends: .ppc-build-base
   image: fedora:latest
-  stage: prepare
+  stage: build-container
+  timeout: 16h
+  tags:
+    - ppc64le
+    - docker
 
   variables:
     _BUILDAH_STARTED_IN_USERNS: ""
@@ -43,7 +70,25 @@ container:
     - buildah bud -t $BUILD_CONTAINER .
     - buildah push $BUILD_CONTAINER
 
-build:
+build-container-if-not-exist:
+  extends: .build-container-base
+  when: on_failure
+
+  only:
+    - tags
+    - web
+
+build-container-if-changes:
+  extends: .build-container-base
+
+  only:
+    changes:
+      - Dockerfile
+
+#
+# Build
+#
+chromium:
   extends: .ppc-build-base
   stage: build
 
@@ -64,26 +109,67 @@ build:
     key: chromium-build-cache
     paths:
       - docker-root/.ccache
+      - docker-root/chromium-*.tar.xz
+      - docker-root/llvm-*.tar.zstd
 
-create-repo:
-  extends: .ppc-build-base
+ungoogled:chromium:
+  extends: chromium
+
+  variables:
+    UNGOOGLED: 1
+
+#
+# Package
+#
+.create-repo-base:
+  image: fedora:latest
   stage: package
-  dependencies:
-    - build
+
+  only:
+    - tags
+    - web
 
   variables:
     GIT_STRATEGY: none
 
   script:
-    - mkdir -p repo/{chromium,chromium-testing}
+    - dnf install
+        --setopt=install_weak_deps=False
+        --disablerepo="*modular*"
+        -y createrepo_c
     - . artifacts_url.sh
-    - createrepo -v -u $ARTIFACTS_URL -o repo/chromium docker-root/target
-    - createrepo -v -u $ARTIFACTS_URL -o repo/chromium-testing docker-root/target
+    - mkdir -p repo/{$PRODUCT_NAME,$PRODUCT_NAME-testing}
+    - createrepo -v -u $ARTIFACTS_URL -o repo/$PRODUCT_NAME docker-root/target
+    - createrepo -v -u $ARTIFACTS_URL -o repo/$PRODUCT_NAME-testing docker-root/target
 
   artifacts:
     paths:
       - repo/
 
+create-repo:
+  extends: .create-repo-base
+
+  # TODO: after GitLab 12.6, use https://docs.gitlab.com/ee/ci/yaml/README.html#artifact-downloads-with-needs
+  needs: ['chromium']
+  dependencies:
+    - chromium
+
+  variables:
+    PRODUCT_NAME: chromium
+
+ungoogled:create-repo:
+  extends: .create-repo-base
+
+  needs: ['ungoogled:chromium']
+  dependencies:
+    - 'ungoogled:chromium'
+
+  variables:
+    PRODUCT_NAME: ungoogled-chromium
+
+#
+# Deploy
+#
 .repo-deploy-base: &repo-deploy-base
   stage: deploy
 
@@ -97,12 +183,13 @@ create-repo:
 
 # TODO: after https://gitlab.com/gitlab-org/gitlab/issues/10876 is resolved, use
 # `trigger:` in both cases
-repo-deploy:
-  extends: .ppc-build-base
+.repo-deploy-api-base:
+  image: fedora:latest
   stage: deploy
 
-  dependencies:
-    - create-repo
+  only:
+    - tags
+    - web
 
   variables:
     GIT_STRATEGY: none
@@ -113,11 +200,37 @@ repo-deploy:
            --form ref=master
            --form "variables[UPSTREAM_BRANCH]=$CI_COMMIT_REF_NAME"
            --form "variables[UPSTREAM_PROJECT_ID]=$CI_PROJECT_ID"
-           $CI_API_V4_URL/projects/15569783/trigger/pipeline
+           $CI_API_V4_URL/projects/$REPO_PROJECT_ID/trigger/pipeline
+
+repo-deploy-api:
+  extends: .repo-deploy-api-base
+  needs: ['create-repo']
+  dependencies:
+    - create-repo
+
+  variables:
+    REPO_PROJECT_ID: 15569783
+
+ungoogled:repo-deploy-api:
+  extends: .repo-deploy-api-base
+  needs: ['ungoogled:create-repo']
+  dependencies:
+    - 'ungoogled:create-repo'
+
+  variables:
+    REPO_PROJECT_ID: 15606466
 
 testing-repo-deploy:
   <<: *repo-deploy-base
+  needs: ['create-repo']
   trigger:
     project: chromium-ppc64le/dnf/chromium-testing
+    strategy: depend
+
+ungoogled:testing-repo-deploy:
+  <<: *repo-deploy-base
+  needs: ['ungoogled:create-repo']
+  trigger:
+    project: chromium-ppc64le/dnf/ungoogled-chromium-testing
     strategy: depend
 

@@ -1,7 +1,7 @@
 --- chromium-78.0.3904.97.orig/chrome/installer/linux/common/chromium-browser/chromium-browser.info
 +++ chromium-78.0.3904.97/chrome/installer/linux/common/chromium-browser/chromium-browser.info
 @@ -25,6 +25,6 @@ FULLDESC="Chromium is a browser that com
- 
+
  # Package maintainer information.
  # TODO(mmoss) Setup a mailbox for this address
 -MAINTNAME="Chromium Linux Team"
@@ -9,14 +9,3 @@
 +MAINTNAME="PPC64 Chromium Linux Team"
 +MAINTMAIL=""
  PRODUCTURL="http://www.chromium.org/"
---- chromium-78.0.3904.97.orig/components/version_ui_strings.grdp
-+++ chromium-78.0.3904.97/components/version_ui_strings.grdp
-@@ -7,7 +7,7 @@
-     Official Build
-   </message>
-   <message name="IDS_VERSION_UI_UNOFFICIAL" desc="unofficial build on the about:version page">
--    Developer Build
-+    PPC64LE Build
-   </message>
-   <message name="IDS_VERSION_UI_32BIT" desc="32-bit on the chrome://version page">
-     (32-bit)

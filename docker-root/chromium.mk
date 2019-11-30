@@ -32,12 +32,6 @@ export NM := $(realpath $(llvm-dir)/bin/llvm-nm)
 ORIG_PATH := $(PATH)
 export PATH := $(gn-bin-dir):$(llvm-dir)/bin:$(ORIG_PATH)
 
-export CCACHE_BASEDIR := $(CURDIR)
-export CCACHE_COMPILERCHECK := content
-export CCACHE_SLOPPINESS := file_macro,time_macros
-export CCACHE_MAXSIZE := 20G
-export CCACHE_NLEVELS := 3
-export CCACHE_DIR := $(CURDIR)/.ccache
 ifdef LOG_CCACHE
 ifdef UNGOOGLED
 export CCACHE_LOGFILE := $(CURDIR)/ccache-ug.log
@@ -121,6 +115,8 @@ $(args-gn): $(args-gn-in) $(ug-args-gn-extra) | $(target-dir)
 	sed -e 's|@@CLANG_BASE_PATH@@|$(llvm-dir)|g' \
 	    -e 's|@@CONCURRENT_LINKS@@|$(CONCURRENT_LINKS)|g' \
 	    -e 's|@@USE_LTO@@|$(USE_LTO)|g' \
+	    -e 's|@@USE_JUMBO@@|$(USE_JUMBO)|g' \
+	    -e 's|@@JUMBO_FILE_LIMIT@@|$(JUMBO_FILE_LIMIT)|g' \
 	    $^ > $@
 
 # This is not used currently, but should work with chrome 79

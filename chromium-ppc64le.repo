@@ -10,3 +10,15 @@ baseurl=https://chromium-ppc64le.gitlab.io/dnf/chromium-testing
 enabled=0
 gpgcheck=0
 
+[ungoogled-chromium-ppc64le]
+name=Ungoogled Chromium PPC64LE
+baseurl=https://chromium-ppc64le.gitlab.io/dnf/ungoogled-chromium
+enabled=1
+gpgcheck=0
+
+[ungoogled-chromium-ppc64le-testing]
+name=Ungoogled Chromium PPC64LE - Updates Testing
+baseurl=https://chromium-ppc64le.gitlab.io/dnf/ungoogled-chromium-testing
+enabled=0
+gpgcheck=0
+

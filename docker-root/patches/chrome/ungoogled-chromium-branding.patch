@@ -1,24 +1,46 @@
---- chromium-78.0.3904.97.orig/chrome/installer/linux/common/chromium-browser/chromium-browser.info
-+++ chromium-78.0.3904.97/chrome/installer/linux/common/chromium-browser/chromium-browser.info
-@@ -6,7 +6,7 @@
+--- chromium-78.0.3904.108.orig/chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml
++++ chromium-78.0.3904.108/chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml
+@@ -1,11 +1,11 @@
+ <!-- Copyright 2017 The Chromium Authors -->
+ <?xml version="1.0" encoding="UTF-8"?>
+ <component type="desktop">
+-  <id>chromium-browser.desktop</id>
++  <id>ungoogled-chromium-browser.desktop</id>
+   <update_contact>chromium-dev@chromium.org</update_contact>
+   <metadata_license>CC0-1.0</metadata_license>
+   <project_license>BSD-3-Clause and LGPL-2.1+ and Apache-2.0 and IJG and MIT and GPL-2.0+ and ISC and OpenSSL and (MPL-1.1 or GPL-2.0 or LGPL-2.0)</project_license>
+-  <name>Chromium Web Browser</name>
++  <name>Ungoogled Chromium Web Browser</name>
+   <summary>The web browser from Chromium project</summary>
+   <description>
+     <p>
+--- chromium-78.0.3904.108.orig/chrome/installer/linux/common/chromium-browser/chromium-browser.info
++++ chromium-78.0.3904.108/chrome/installer/linux/common/chromium-browser/chromium-browser.info
+@@ -6,22 +6,22 @@
  # chromium-browser packages for various platforms.
- 
+
  # Base name of the package.
 -PACKAGE="chromium-browser"
 +PACKAGE="ungoogled-chromium-browser"
- 
+
  # Filename of the main executable (for generating launcher scripts, etc.)
  PROGNAME=chrome
-@@ -18,10 +18,10 @@ INSTALLDIR=/opt/chromium.org/chromium
- MENUNAME="Chromium Web Browser"
- 
+
+ # Base directory for package installation.
+-INSTALLDIR=/opt/chromium.org/chromium
++INSTALLDIR=/opt/chromium.org/ungoogled-chromium
+
+ # Display string for desktop menu/icon.
+-MENUNAME="Chromium Web Browser"
++MENUNAME="Ungoogled Chromium Web Browser"
+
  # Brief package description.
 -SHORTDESC="The web browser from Chromium.org"
 +SHORTDESC="The web browser from Chromium.org combined with patches to enhance its privacy and security"
- 
+
  # Detailed package description.
 -FULLDESC="Chromium is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier."
 +FULLDESC="Ungoogled Chromium is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier."
- 
+
  # Package maintainer information.
  # TODO(mmoss) Setup a mailbox for this address

@@ -7,6 +7,9 @@ NUM_THREADS ?= 16
 CONCURRENT_LINKS ?= 2
 USE_LTO ?= true
 
+USE_JUMBO ?= true
+JUMBO_FILE_LIMIT ?= 50
+
 artifact-dir := target
 
 # llvm_rev is from $(chrome-dir)/tools/clang/scripts/update.py

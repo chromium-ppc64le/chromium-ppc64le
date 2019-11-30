@@ -9,9 +9,17 @@ These are largely the same as upstream's. For an alternative, you can use https:
 
 The easiest way to install is to add the repo...
 
+## Adding DNF Repo
+
 ```
 sudo dnf install dnf-plugins-core
 sudo dnf config-manager --add-repo=https://github.com/vddvss/chromium-ppc64le/raw/master/chromium-ppc64le.repo
+```
+
+## Installing
+
+```
+sudo dnf install chromium-browser-stable
 ```
 
 ## Quick download
