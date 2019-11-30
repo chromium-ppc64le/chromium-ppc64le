@@ -4,8 +4,7 @@
 #
 
 stages:
-  - check-container
-  - build-container
+  - prepare
   - build
   - package
   - deploy
@@ -30,27 +29,10 @@ variables:
 # Prepare
 #
 
-# This checks to see if the build container exists; if it doesn't the
-# `on_failure` rule under `build-container` will trigger a build of the
-# container. A build of the container can also be triggered by setting the
-# environment variable REBUILD_CONTAINER.
-check-container:
+build-container:
   extends: .ppc-build-base
-  stage: check-container
-
-  variables:
-    GIT_STRATEGY: none
-
-  script: /usr/bin/true
-
-.build-container-base:
-  #extends: .ppc-build-base
   image: fedora:latest
-  stage: build-container
-  timeout: 16h
-  tags:
-    - ppc64le
-    - docker
+  stage: prepare
 
   variables:
     _BUILDAH_STARTED_IN_USERNS: ""
@@ -69,21 +51,6 @@ check-container:
     - buildah login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - buildah bud -t $BUILD_CONTAINER .
     - buildah push $BUILD_CONTAINER
-
-build-container-if-not-exist:
-  extends: .build-container-base
-  when: on_failure
-
-  only:
-    - tags
-    - web
-
-build-container-if-changes:
-  extends: .build-container-base
-
-  only:
-    changes:
-      - Dockerfile
 
 #
 # Build
@@ -200,7 +167,8 @@ ungoogled:create-repo:
            --form ref=master
            --form "variables[UPSTREAM_BRANCH]=$CI_COMMIT_REF_NAME"
            --form "variables[UPSTREAM_PROJECT_ID]=$CI_PROJECT_ID"
-           $CI_API_V4_URL/projects/$REPO_PROJECT_ID/trigger/pipeline
+           --form "variables[UPSTREAM_JOB_NAME]=$CREATE_REPO_JOB_NAME"
+           $CI_API_V4_URL/projects/$DOWNSTREAM_PROJECT_ID/trigger/pipeline
 
 repo-deploy-api:
   extends: .repo-deploy-api-base
@@ -209,7 +177,8 @@ repo-deploy-api:
     - create-repo
 
   variables:
-    REPO_PROJECT_ID: 15569783
+    DOWNSTREAM_PROJECT_ID: 15569783
+    CREATE_REPO_JOB_NAME: 'create-repo'
 
 ungoogled:repo-deploy-api:
   extends: .repo-deploy-api-base
@@ -218,11 +187,14 @@ ungoogled:repo-deploy-api:
     - 'ungoogled:create-repo'
 
   variables:
-    REPO_PROJECT_ID: 15606466
+    DOWNSTREAM_PROJECT_ID: 15606466
+    CREATE_REPO_JOB_NAME: 'ungoogled:create-repo'
 
 testing-repo-deploy:
   <<: *repo-deploy-base
   needs: ['create-repo']
+  variables:
+    UPSTREAM_JOB_NAME: 'create-repo'
   trigger:
     project: chromium-ppc64le/dnf/chromium-testing
     strategy: depend
@@ -230,6 +202,8 @@ testing-repo-deploy:
 ungoogled:testing-repo-deploy:
   <<: *repo-deploy-base
   needs: ['ungoogled:create-repo']
+  variables:
+    UPSTREAM_JOB_NAME: 'ungoogled:create-repo'
   trigger:
     project: chromium-ppc64le/dnf/ungoogled-chromium-testing
     strategy: depend

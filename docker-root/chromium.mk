@@ -165,7 +165,7 @@ $(rpm-file): $(chrome)
 # includes the files needed and the binaries are already stripped
 $(dist-file): $(rpm-file)
 	rpm2cpio $< | cpio -dium
-	mv opt/chromium.org/chromium $(chrome-file-name-base)
+	mv opt/chromium.org/$(dist-prefix)chromium $(chrome-file-name-base)
 	tar cJf $@ $(chrome-file-name-base)
 
 $(chrome-rpm-artifact): $(rpm-file) $(dist-file) | $(artifact-dir)
