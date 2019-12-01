@@ -79,7 +79,7 @@ chromium:
       - docker-root/chromium-*.tar.xz
       - docker-root/llvm-*.tar.zstd
 
-ungoogled:chromium:
+ungoogled-chromium:
   extends: chromium
 
   variables:
@@ -124,12 +124,12 @@ create-repo:
   variables:
     PRODUCT_NAME: chromium
 
-ungoogled:create-repo:
+ungoogled-create-repo:
   extends: .create-repo-base
 
-  needs: ['ungoogled:chromium']
+  needs: ['ungoogled-chromium']
   dependencies:
-    - 'ungoogled:chromium'
+    - 'ungoogled-chromium'
 
   variables:
     PRODUCT_NAME: ungoogled-chromium
@@ -137,7 +137,7 @@ ungoogled:create-repo:
 #
 # Deploy
 #
-.repo-deploy-base: &repo-deploy-base
+.repo-deploy-base:
   stage: deploy
 
   variables:
@@ -180,18 +180,18 @@ repo-deploy-api:
     DOWNSTREAM_PROJECT_ID: 15569783
     CREATE_REPO_JOB_NAME: 'create-repo'
 
-ungoogled:repo-deploy-api:
+ungoogled-repo-deploy-api:
   extends: .repo-deploy-api-base
-  needs: ['ungoogled:create-repo']
+  needs: ['ungoogled-create-repo']
   dependencies:
-    - 'ungoogled:create-repo'
+    - 'ungoogled-create-repo'
 
   variables:
     DOWNSTREAM_PROJECT_ID: 15606466
-    CREATE_REPO_JOB_NAME: 'ungoogled:create-repo'
+    CREATE_REPO_JOB_NAME: 'ungoogled-create-repo'
 
 testing-repo-deploy:
-  <<: *repo-deploy-base
+  extends: .repo-deploy-base
   needs: ['create-repo']
   variables:
     UPSTREAM_JOB_NAME: 'create-repo'
@@ -199,11 +199,11 @@ testing-repo-deploy:
     project: chromium-ppc64le/dnf/chromium-testing
     strategy: depend
 
-ungoogled:testing-repo-deploy:
-  <<: *repo-deploy-base
-  needs: ['ungoogled:create-repo']
+ungoogled-testing-repo-deploy:
+  extends: .repo-deploy-base
+  needs: ['ungoogled-create-repo']
   variables:
-    UPSTREAM_JOB_NAME: 'ungoogled:create-repo'
+    UPSTREAM_JOB_NAME: 'ungoogled-create-repo'
   trigger:
     project: chromium-ppc64le/dnf/ungoogled-chromium-testing
     strategy: depend

@@ -12,11 +12,16 @@ The easiest way to install is to add the repo...
 ## Adding DNF Repo
 
 ```
-sudo dnf install dnf-plugins-core
 sudo dnf config-manager --add-repo=https://github.com/vddvss/chromium-ppc64le/raw/master/chromium-ppc64le.repo
 ```
 
+Alternativly, you can download the 
+[`chromium-ppc64le.repo`](https://github.com/vddvss/chromium-ppc64le/raw/master/chromium-ppc64le.repo)
+file from this repository and place it in `/etc/yum.repos.d`.
+
 ## Installing
+
+After adding the repository, run:
 
 ```
 sudo dnf install chromium-browser-stable

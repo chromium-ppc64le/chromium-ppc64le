@@ -15,16 +15,16 @@ define release_json_template :=
                 "url": "$(CI_JOB_URL)/artifacts/raw/target/$(chrome-rpm-file-name)"
             },
             {
-                "name": "$(ungoogled-chrome-rpm-file-name)",
-                "url": "$(CI_JOB_URL)/artifacts/raw/target/$(ungoogled-chrome-rpm-file-name)"
+                "name": "ungoogled-$(chrome-rpm-file-name)",
+                "url": "$(CI_JOB_URL)/artifacts/raw/target/ungoogled-$(chrome-rpm-file-name)"
             },
             {
                 "name": "$(chrome-dist-file-name)",
                 "url": "$(CI_JOB_URL)/artifacts/raw/target/$(chrome-dist-file-name)"
             },
             {
-                "name": "$(ungoogled-chrome-dist-file-name)",
-                "url": "$(CI_JOB_URL)/artifacts/raw/target/$(ungoogled-chrome-dist-file-name)"
+                "name": "ungoogled-$(chrome-dist-file-name)",
+                "url": "$(CI_JOB_URL)/artifacts/raw/target/ungoogled-$(chrome-dist-file-name)"
             }
         ]
     }
