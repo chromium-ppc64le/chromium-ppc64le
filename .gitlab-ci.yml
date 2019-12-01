@@ -63,7 +63,7 @@ chromium:
     - make -C docker-root -j16
     # TODO: Once https://gitlab.com/gitlab-org/gitlab/issues/22638 is fixed,
     # just pass the variable
-    - echo "export ARTIFACTS_URL=$CI_JOB_URL/artifacts/raw/target" > artifacts_url.sh
+    - echo "export ARTIFACTS_URL=$CI_JOB_URL/artifacts/raw/docker-root/target" > artifacts_url.sh
 
   artifacts:
     paths:
@@ -79,7 +79,7 @@ chromium:
       - docker-root/chromium-*.tar.xz
       - docker-root/llvm-*.tar.zstd
 
-ungoogled-chromium:
+ungoogled:chromium:
   extends: chromium
 
   variables:
@@ -124,12 +124,12 @@ create-repo:
   variables:
     PRODUCT_NAME: chromium
 
-ungoogled-create-repo:
+ungoogled:create-repo:
   extends: .create-repo-base
 
-  needs: ['ungoogled-chromium']
+  needs: ['ungoogled:chromium']
   dependencies:
-    - 'ungoogled-chromium'
+    - 'ungoogled:chromium'
 
   variables:
     PRODUCT_NAME: ungoogled-chromium
@@ -137,19 +137,6 @@ ungoogled-create-repo:
 #
 # Deploy
 #
-.repo-deploy-base:
-  stage: deploy
-
-  variables:
-    UPSTREAM_BRANCH: $CI_COMMIT_REF_NAME
-    UPSTREAM_PROJECT_ID: $CI_PROJECT_ID
-
-  only:
-    - tags
-    - web
-
-# TODO: after https://gitlab.com/gitlab-org/gitlab/issues/10876 is resolved, use
-# `trigger:` in both cases
 .repo-deploy-api-base:
   image: fedora:latest
   stage: deploy
@@ -167,8 +154,12 @@ ungoogled-create-repo:
            --form ref=master
            --form "variables[UPSTREAM_BRANCH]=$CI_COMMIT_REF_NAME"
            --form "variables[UPSTREAM_PROJECT_ID]=$CI_PROJECT_ID"
-           --form "variables[UPSTREAM_JOB_NAME]=$CREATE_REPO_JOB_NAME"
+           --form "variables[UPSTREAM_JOB_ID]=$CI_JOB_ID"
            $CI_API_V4_URL/projects/$DOWNSTREAM_PROJECT_ID/trigger/pipeline
+
+  artifacts:
+    paths:
+      - repo/
 
 repo-deploy-api:
   extends: .repo-deploy-api-base
@@ -177,34 +168,26 @@ repo-deploy-api:
     - create-repo
 
   variables:
-    DOWNSTREAM_PROJECT_ID: 15569783
-    CREATE_REPO_JOB_NAME: 'create-repo'
+    DOWNSTREAM_PROJECT_ID: 15569783 # chromium-ppc64le/dnf/chromium
 
-ungoogled-repo-deploy-api:
+ungoogled:repo-deploy-api:
   extends: .repo-deploy-api-base
-  needs: ['ungoogled-create-repo']
+  needs: ['ungoogled:create-repo']
   dependencies:
-    - 'ungoogled-create-repo'
+    - 'ungoogled:create-repo'
 
   variables:
-    DOWNSTREAM_PROJECT_ID: 15606466
-    CREATE_REPO_JOB_NAME: 'ungoogled-create-repo'
+    DOWNSTREAM_PROJECT_ID: 15606466 # chromium-ppc64le/dnf/ungoogled-chromium
 
-testing-repo-deploy:
-  extends: .repo-deploy-base
-  needs: ['create-repo']
-  variables:
-    UPSTREAM_JOB_NAME: 'create-repo'
-  trigger:
-    project: chromium-ppc64le/dnf/chromium-testing
-    strategy: depend
+testing-repo-deploy-api:
+  extends: repo-deploy-api
 
-ungoogled-testing-repo-deploy:
-  extends: .repo-deploy-base
-  needs: ['ungoogled-create-repo']
   variables:
-    UPSTREAM_JOB_NAME: 'ungoogled-create-repo'
-  trigger:
-    project: chromium-ppc64le/dnf/ungoogled-chromium-testing
-    strategy: depend
+    DOWNSTREAM_PROJECT_ID: 15569827 # chromium-ppc64le/dnf/chromium-testing
+
+ungoogled:testing-repo-deploy-api:
+  extends: ungoogled:repo-deploy-api
+
+  variables:
+    DOWNSTREAM_PROJECT_ID: 15606460 # chromium-ppc64le/dnf/ungoogled-chromium-testing
 
