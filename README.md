@@ -27,6 +27,12 @@ After adding the repository, run:
 sudo dnf install chromium-browser-stable
 ```
 
+or
+
+```
+sudo dnf install ungoogled-chromium-browser-stable
+```
+
 ## Quick download
 
 <!-- CURRENT TABLE -->
