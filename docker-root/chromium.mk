@@ -174,10 +174,14 @@ $(chrome-rpm-artifact): $(rpm-file) $(dist-file) | $(artifact-dir)
 $(chrome-dist-artifact): $(dist-file) | $(artifact-dir) $(ccache-log-compressed)
 	mv $< $@
 
+.PHONY: bash
+bash:
+	bash
+
 .PHONY: clean-patches
 clean-patches: export QUILT_PATCHES := $(CURDIR)
 clean-patches: | $(chrome-dir)
-	cd $| && quilt pop -af
+	cd $| && quilt pop -af || :
 	rm -f series
 	rm -rf $|/.pc
 

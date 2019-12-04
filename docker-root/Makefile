@@ -80,6 +80,7 @@ $(llvm-archive):
 
 $(llvm-dir): | $(llvm-archive)
 	tar --zstd -xf $|
+	patch -d $@ -p1 < $(CURDIR)/patches/llvm/fix-altivec.patch
 
 ###############################################################################
 # Chrome
