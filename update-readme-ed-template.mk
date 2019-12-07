@@ -11,17 +11,33 @@ download_url := $(download_url_base)/$(release_tag)
 define update_readme_ed_script :=
 H
 /<!-- RPM INSTALL COMMAND -->/+2c
-sudo dnf install $(download_url)/$(chrome-rpm-file-name)
+sudo rpm -Uvh $(download_url)/$(chrome-rpm-file-name)
 .
 
-/<!-- ARCHIVE TABLE -->/+2x
-s!sudo dnf install \($(download_url_base)/\(.*\)/.*\)\.ppc64le\.rpm!| \2 | [rpm](\1.ppc64le.rpm) | [.tar.xz](\1.tar.xz) |!
-
-/<!-- CURRENT TABLE -->/+3c
-| [$(release_tag)]($(download_url)/$(chrome-rpm-file-name)) | [$(release_tag)]($(download_url)/$(chrome-dist-file-name)) |
+/^\[latest standard build\].\+)$$/c
+[latest standard build]($(download_url)/$(chrome-rpm-file-name))
 .
 
-g/latest/s|\[latest\]([^)]\+\.tar\.xz)|[latest]($(download_url)/$(chrome-dist-file-name))|g
+/<!-- RPM UNGOOGLED INSTALL COMMAND -->/+2c
+sudo rpm -Uvh $(download_url)/ungoogled-$(chrome-rpm-file-name)
+.
+
+/^\[latest Ungoogled Chromium build\].\+)$$/c
+[latest Ungoogled Chromium build]($(download_url)/ungoogled-$(chrome-rpm-file-name))
+.
+
+/<!-- CURRENT ROW -->/+;+6c
+    <tr>
+      <td>$(release_tag)</td>
+      <td align="center"><a href="$(download_url)/$(chrome-rpm-file-name)">rpm</a></td>
+      <td align="center"><a href="$(download_url)/$(chrome-dist-file-name)">.tar.xz</a></td>
+      <td align="center"><a href="$(download_url)/ungoogled-$(chrome-rpm-file-name)">rpm</a></td>
+      <td align="center"><a href="$(download_url)/ungoogled-$(chrome-dist-file-name)">.tar.xz</a></td>
+    </tr>
+.
+
+/<!-- ARCHIVE ROW -->/x
+
 w
 endef
 export update_readme_ed_script

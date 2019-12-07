@@ -54,7 +54,7 @@ export LDFLAGS += -lm
 export CCACHE_BASEDIR := $(CURDIR)
 export CCACHE_COMPILERCHECK := content
 export CCACHE_SLOPPINESS := file_macro,time_macros
-export CCACHE_MAXSIZE := 25G
+export CCACHE_MAXSIZE ?= 25G
 export CCACHE_NLEVELS := 3
 export CCACHE_DIR := $(CURDIR)/.ccache
 

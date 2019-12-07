@@ -10,14 +10,11 @@ include docker-root/common.mk
 $(artifact-dir):
 	mkdir -p $@
 
-build-root:
-	mkdir -p $@
-
 # This is a development environment target that mounts the container's workdir
 # in ./build-root and opens a terminal in the container
 .PHONY: dev
-dev: | $(artifact-dir) build-root
-	cp -R docker-root/ build-root/
+dev: | $(artifact-dir)
+	[ -d build-root ] || cp -R docker-root/ build-root/
 	podman build -t chrome-build-image .
 	podman run -it \
 	    --name=chrome-builder \

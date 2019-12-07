@@ -1,76 +1,170 @@
 # Unofficial Chromium Builds for PPC64LE
 
-This repository contains prebuilt RPMs and tarballs for Chromium on ppc64le
-along with the build scripts.
+This repository contains a framework for building and distributing RPMs and
+tarballs for Chromium on ppc64le. The repository provides two flavors of
+Chromium, one that is largely the same as upstream's, and another containing the
+[Ungoogled Chromium patchset](https://gitlab.com/chromium-ppc64le/ungoogled-chromium).
 
-These are largely the same as upstream's. For an alternative, you can use https://github.com/leo-lb/ungoogled-chromium
+## Installation
 
-# Installation
+The easiest way to install is to add the repository, which is currently only
+available for Fedora and RHEL/CentOS.
 
-The easiest way to install is to add the repo...
+### Fedora, RHEL, and CentOS
 
-## Adding DNF Repo
+#### Adding DNF Repo
 
+```bash
+sudo dnf config-manager --add-repo=https://gitlab.com/chromium-ppc64le/chromium-ppc64le/raw/master/chromium-ppc64le.repo
 ```
-sudo dnf config-manager --add-repo=https://github.com/vddvss/chromium-ppc64le/raw/master/chromium-ppc64le.repo
-```
 
-Alternativly, you can download the 
-[`chromium-ppc64le.repo`](https://github.com/vddvss/chromium-ppc64le/raw/master/chromium-ppc64le.repo)
+Alternatively, you can download the
+[`chromium-ppc64le.repo`](https://gitlab.com/chromium-ppc64le/chromium-ppc64le/raw/master/chromium-ppc64le.repo)
 file from this repository and place it in `/etc/yum.repos.d`.
 
-## Installing
+#### Installing
 
 After adding the repository, run:
 
-```
+##### Standard Chromium
+
+```bash
 sudo dnf install chromium-browser-stable
 ```
 
-or
+##### Ungoogled Chromium
 
-```
+```bash
 sudo dnf install ungoogled-chromium-browser-stable
 ```
 
-## Quick download
+### Other Distributions
 
-<!-- CURRENT TABLE -->
-| RPM | .tar.xz |
-| --- | ------- |
-| [v78.0.3904.108-1](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm) | [v78.0.3904.108-1](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.tar.xz) |
+#### Current Release Download
 
-## Installing the RPM
+<table>
+  <thead>
+    <tr>
+      <th>Version</th>
+      <th colspan=2>Standard Chromium</th>
+      <th colspan=2>Ungoogled Chromium</th>
+    </tr>
+  </thead>
+  <tbody>
+<!-- CURRENT ROW -->
+    <tr>
+      <td>v78.0.3904.108-1</td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm">rpm</a></td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.tar.xz">.tar.xz</a></td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/ungoogled-chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm">rpm</a></td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/ungoogled-chromium-browser-stable-78.0.3904.108-1.tar.xz">.tar.xz</a></td>
+    </tr>
+  </tbody>
+</table>
 
-### Importing GPG key (only needed for initial install)
+#### Other RPM Distributions
 
-```
-sudo rpm --import https://github.com/vddvss/chromium-ppc64le/raw/master/RPM-GPG-KEY-chromium-ppc64le
-```
+Installing on other distributions that use RPM, such as openSUSE, should be
+possible, but it has not been tested.
 
-### Installing/Upgrading
+##### Installing/Upgrading
+
+###### Standard Chromium
 
 <!-- RPM INSTALL COMMAND -->
-```
-sudo dnf install https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm
-```
-
-## Downloading a prebuilt binary
-
-Just download the [latest](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.tar.xz) and extract it.
-
-## Building from source
-
-```
-sudo make -j16
+```bash
+sudo rpm -Uvh https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm
 ```
 
-Note that with the configuration in this repo, you will need at least 64G of RAM
-and at least 8 cores. 
+###### Ungoogled Chromium
+
+<!-- RPM UNGOOGLED INSTALL COMMAND -->
+```bash
+sudo rpm -Uvh https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/ungoogled-chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm
+```
+
+#### Other Distributions
+
+Just download the
+[latest standard build](https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm)
+or the
+[latest Ungoogled Chromium build](https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/ungoogled-chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm)
+and extract it.
+
+## Building from Source
+
+```bash
+git clone --recurse-submodules https://gitlab.com/chromium-ppc64le/chromium-ppc64le
+cd chromium-ppc64le
+make dev
+```
+
+This will build a container using [`podman`](https://podman.io/), open a shell
+in the container, and bind mount the container's working directory to
+a `build-root/` directory in the current directory. From the container, run:
+
+```bash
+make chromium -j16
+```
+
+or, for Ungoogled Chromium:
+
+```bash
+make ungoogled-chromium -j16
+```
+
+To build both flavors, run:
+
+```bash
+make both-chromium -j16
+```
+
+### Resource Requirements for Build
+
+Note that with the configuration in this repo, the build uses 32GB of RAM at its
+peak, about 100GB of disk space, 16 CPU threads for most of the build, and at
+certain points in the build 30 threads. Resource requirements can be reduced by
+altering the below environment variables.
+
+### Environment Variables Controlling Build
+
+Certain environment variables control aspects of the build and are listed below
+along with their default values.
+
+```bash
+# Number of threads to use for multithreaded operations in the build. The build
+# uses `ninja` for building and enables multithreaded compression. These do not
+# respect the -j thread passed to `make`.
+NUM_THREADS=16
+
+# Whether to build using Link-Time Optimization. This increases RAM requirements
+# for the build.
+USE_LTO=true
+
+# Number of link jobs to do concurrently. Each concurrent job uses about 16GB
+# of RAM and 8 threads. These may be in addition to the threads specified by the
+# NUM_THREADS environment variable, so having 2 concurrent link jobs will cause
+# the build to use a maximum of 30 threads, as in this formula:
+#      (NUM_THREADS - CONCURRENT_LINKS) + (8 * CONCURRENT_LINKS).
+CONCURRENT_LINKS=2
+
+# Whether to use the jumbo build feature, which combines certain source files to
+# speed up the build. This is being phased out in future versions of chromium.
+USE_JUMBO=true
+
+# Number of files to combine for jumbo builds. The larger this number is, the
+# more RAM is used.
+JUMBO_FILE_LIMIT=50
+
+# Size of the `ccache` cache. To disable `ccache`, set the CCACHE_DISABLE
+# environment variable
+CCACHE_MAXSIZE=25G
+
+```
 
 ## Notes on Binaries
 
-### Patches included
+### Patches Included
 
 * [Patches](https://github.com/shawnanastasio/chromium_power) to enable building
   on PPC64LE
@@ -81,34 +175,64 @@ and at least 8 cores.
 * [Patch](docker-root/patches/chrome/change-user-agent.patch) to change the
   browser's user agent string to be the same as the official Chrome build on
   Linux, which helps reduce the browser's fingerprinting surface
+* [Patch](docker-root/patches/chrome/skia-vsx-instructions.patch) to enable use
+  of POWER VSX instructions in the skia rendering engine
 
-### Features enabled
+### Features Enabled
 
-* ThinLTO
+* Link-time optimized builds
 * PulseAudio integration
 * Non-free codecs
 
-### Platform support
+### Build Logs
 
-These uses the rpm packaging files from the chromium build tree.
-
-The RPMs should work on all RPM distros, but they are only tested on Fedora.
+The logs for the build and repo creation are available
+[under GitLab pipelines](https://gitlab.com/chromium-ppc64le/chromium-ppc64le/pipelines).
 
 ## Issues
 
 ### TODO
 
-#### `dpkg` support
+#### GPG Signing
 
-The chromium tree includes files to build packages for Debian-based systems. I
-haven't built these packages, since I can't easily test them, and the packaging
-files in the chromium tree seem to make more assumptions about the platform.
+Currently, the builds are not GPG signed, as signing the builds would require
+storage of the private key and password in an unsafe manner on GitLab's servers.
+Options for proper signing are currently being evaluated.
 
-## Previous versions
+#### `dpkg` Support
+
+The chromium tree includes files to build packages for Debian-based systems.
+These haven't been built, since the maintainers can't easily test them, and the
+packaging files in the chromium tree seem to make more assumptions about the
+platform.
+
+## Previous Versions
 
 <!-- ARCHIVE TABLE -->
-| Version  | RPM | .tar.xz |
-| -------- | --- | --------|
-| v78.0.3904.87-1 | [rpm](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.87-1/chromium-browser-stable-78.0.3904.87-1.ppc64le.rpm) | [.tar.xz](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.87-1/chromium-browser-stable-78.0.3904.87-1.tar.xz) |
-| v78.0.3904.70-1 | [rpm](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.70-1/chromium-browser-stable-78.0.3904.70-1.ppc64le.rpm) | [.tar.xz](https://github.com/vddvss/chromium-ppc64le/releases/download/v78.0.3904.70-1/chromium-browser-stable-78.0.3904.70-1.tar.xz) |
+<table>
+  <thead>
+    <tr>
+      <th>Version</th>
+      <th colspan=2>Standard Chromium</th>
+      <th colspan=2>Ungoogled Chromium</th>
+    </tr>
+  </thead>
+  <tbody>
+<!-- ARCHIVE ROW -->
+    <tr>
+      <td>VESION</td>
+      <td>LINK</td>
+      <td>LINK</td>
+      <td>LINK</td>
+      <td>LINK</td>
+    </tr>
+    <tr>
+      <td>VESION</td>
+      <td>LINK</td>
+      <td>LINK</td>
+      <td>LINK</td>
+      <td>LINK</td>
+    </tr>
+  </tbody>
+</table>
 
