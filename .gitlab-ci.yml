@@ -3,6 +3,19 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+#
+# This is the GitLab CI file for building chromium and creating the dnf
+# repository
+#
+# Variables controlling build behavior are listed in README.md. In addition to
+# those, defining these variables control the CI behavior:
+#
+#   NO_REBUILD_CONTAINER  - do not rebuild the build container
+#   NO_UNGOOGLED_CHROMIUM - do not build ungoogled chromium
+#   NO_STANDARD_CHROMIUM  - do not build standard chromium
+#   NO_DEPLOY             - do not deploy the build artifacts to the dnf repo
+#
+
 stages:
   - prepare
   - build
@@ -13,6 +26,7 @@ variables:
   BUILD_CONTAINER: $CI_REGISTRY_IMAGE/chromium-build-image:$CI_COMMIT_REF_NAME
   GIT_SUBMODULE_STRATEGY: recursive
 
+# Base rule for stages requiring a ppc64le builder
 .ppc-build-base:
   image: $BUILD_CONTAINER
   timeout: 16h
@@ -25,10 +39,23 @@ variables:
     - ppc64le
     - docker
 
-#
-# Prepare
-#
+# By default, the CI will build both standard and ungoogled chromium. To only
+# build standard chromium, pass the environment variable NO_UNGOOGLED_CHROMIUM
+# to the CI job. To only build ungoogled chromium, pass the environment variable
+# NO_STANDARD_CHROMIUM
+.standard-build-base:
+  except:
+    variables:
+      - $NO_STANDARD_CHROMIUM
 
+.ungoogled-build-base:
+  except:
+    variables:
+      - $NO_UNGOOGLED_CHROMIUM
+
+#
+# Prepare Stage
+#
 build-container:
   extends: .ppc-build-base
   image: fedora:latest
@@ -39,6 +66,10 @@ build-container:
     BUILDAH_FORMAT: docker
     BUILDAH_ISOLATION: chroot
     GIT_SUBMODULE_STRATEGY: none
+
+  except:
+    variables:
+      - $NO_REBUILD_CONTAINER
 
   script:
     - dnf install
@@ -53,9 +84,9 @@ build-container:
     - buildah push $BUILD_CONTAINER
 
 #
-# Build
+# Build Stage
 #
-chromium:
+.chromium-build-base:
   extends: .ppc-build-base
   stage: build
 
@@ -79,16 +110,24 @@ chromium:
       - docker-root/chromium-*.tar.xz
       - docker-root/llvm-*.tar.zstd
 
+chromium:
+  extends:
+    - .chromium-build-base
+    - .standard-build-base
+
 ungoogled:chromium:
-  extends: chromium
+  extends:
+    - .chromium-build-base
+    - .ungoogled-build-base
 
   variables:
     UNGOOGLED: 1
 
 #
-# Package
+# Package Stage
 #
 .create-repo-base:
+  # This runs on a shared x86 builder
   image: fedora:latest
   stage: package
 
@@ -114,7 +153,9 @@ ungoogled:chromium:
       - repo/
 
 create-repo:
-  extends: .create-repo-base
+  extends:
+    - .create-repo-base
+    - .standard-build-base
 
   # TODO: after GitLab 12.6, use https://docs.gitlab.com/ee/ci/yaml/README.html#artifact-downloads-with-needs
   needs: ['chromium']
@@ -125,7 +166,9 @@ create-repo:
     PRODUCT_NAME: chromium
 
 ungoogled:create-repo:
-  extends: .create-repo-base
+  extends:
+    - .create-repo-base
+    - .ungoogled-build-base
 
   needs: ['ungoogled:chromium']
   dependencies:
@@ -135,9 +178,10 @@ ungoogled:create-repo:
     PRODUCT_NAME: ungoogled-chromium
 
 #
-# Deploy
+# Deploy Stage
 #
-.repo-deploy-api-base:
+.repo-deploy-base:
+  # This runs on a shared x86 builder
   image: fedora:latest
   stage: deploy
 
@@ -145,9 +189,15 @@ ungoogled:create-repo:
     - tags
     - web
 
+  except:
+    variables:
+      - $NO_DEPLOY
+
   variables:
     GIT_STRATEGY: none
 
+  # TODO: after https://gitlab.com/gitlab-org/gitlab/issues/10876 is fixed,
+  # consider using `trigger:` syntax
   script:
     - curl -s --request POST
            --form token=$CI_JOB_TOKEN
@@ -161,8 +211,10 @@ ungoogled:create-repo:
     paths:
       - repo/
 
-repo-deploy-api:
-  extends: .repo-deploy-api-base
+repo-deploy:
+  extends:
+    - .repo-deploy-base
+    - .standard-build-base
   needs: ['create-repo']
   dependencies:
     - create-repo
@@ -170,8 +222,10 @@ repo-deploy-api:
   variables:
     DOWNSTREAM_PROJECT_ID: 15569783 # chromium-ppc64le/dnf/chromium
 
-ungoogled:repo-deploy-api:
-  extends: .repo-deploy-api-base
+ungoogled:repo-deploy:
+  extends:
+    - .repo-deploy-base
+    - .ungoogled-build-base
   needs: ['ungoogled:create-repo']
   dependencies:
     - 'ungoogled:create-repo'
@@ -179,14 +233,14 @@ ungoogled:repo-deploy-api:
   variables:
     DOWNSTREAM_PROJECT_ID: 15606466 # chromium-ppc64le/dnf/ungoogled-chromium
 
-testing-repo-deploy-api:
-  extends: repo-deploy-api
+testing-repo-deploy:
+  extends: repo-deploy
 
   variables:
     DOWNSTREAM_PROJECT_ID: 15569827 # chromium-ppc64le/dnf/chromium-testing
 
-ungoogled:testing-repo-deploy-api:
-  extends: ungoogled:repo-deploy-api
+ungoogled:testing-repo-deploy:
+  extends: ungoogled:repo-deploy
 
   variables:
     DOWNSTREAM_PROJECT_ID: 15606460 # chromium-ppc64le/dnf/ungoogled-chromium-testing

@@ -206,6 +206,15 @@ These haven't been built, since the maintainers can't easily test them, and the
 packaging files in the chromium tree seem to make more assumptions about the
 platform.
 
+## License
+
+Most files in this repository are licensed under the
+[Apache 2.0 license](LICENSE).
+
+Patches are licensed under the license to the files they patch.
+
+Submodules are licensed under the respective license in the repository.
+
 ## Previous Versions
 
 <!-- ARCHIVE TABLE -->
@@ -220,14 +229,7 @@ platform.
   <tbody>
 <!-- ARCHIVE ROW -->
     <tr>
-      <td>VESION</td>
-      <td>LINK</td>
-      <td>LINK</td>
-      <td>LINK</td>
-      <td>LINK</td>
-    </tr>
-    <tr>
-      <td>VESION</td>
+      <td>VERSION</td>
       <td>LINK</td>
       <td>LINK</td>
       <td>LINK</td>

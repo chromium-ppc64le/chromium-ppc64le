@@ -1,11 +1,12 @@
---- chromium-78.0.3904.97.orig/chrome/installer/linux/common/chromium-browser/chromium-browser.info
-+++ chromium-78.0.3904.97/chrome/installer/linux/common/chromium-browser/chromium-browser.info
+--- chromium-78.0.3904.108.orig/chrome/installer/linux/common/chromium-browser/chromium-browser.info
++++ chromium-78.0.3904.108/chrome/installer/linux/common/chromium-browser/chromium-browser.info
 @@ -25,6 +25,6 @@ FULLDESC="Chromium is a browser that com
-
+ 
  # Package maintainer information.
  # TODO(mmoss) Setup a mailbox for this address
 -MAINTNAME="Chromium Linux Team"
 -MAINTMAIL="chromium-linux-packager@chromium.org"
+-PRODUCTURL="http://www.chromium.org/"
 +MAINTNAME="PPC64 Chromium Linux Team"
 +MAINTMAIL=""
- PRODUCTURL="http://www.chromium.org/"
++PRODUCTURL="https://gitlab.com/chromium-ppc64le/chromium-ppc64le"
