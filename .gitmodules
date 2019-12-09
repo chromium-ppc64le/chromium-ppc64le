@@ -3,4 +3,4 @@
 	url = ../chromium-ppc64le-patches-quilt.git
 [submodule "ungoogled-chromium"]
 	path = docker-root/patches/chrome/ungoogled-chromium
-	url = https://gitlab.com/lle-bout/ungoogled-chromium.git
+	url = https://gitlab.com/chromium-ppc64le/ungoogled-chromium.git

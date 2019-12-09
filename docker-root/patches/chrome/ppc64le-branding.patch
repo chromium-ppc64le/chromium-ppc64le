@@ -1,5 +1,5 @@
---- .pc/patches/chrome/ppc64le-branding.patch/chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml	2019-12-07 19:33:39.523464964 -0500
-+++ chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml	2019-12-07 19:41:01.320966048 -0500
+--- patches.old/chrome/ppc64le-branding.patch/chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml	2019-12-07 19:33:39.523464964 -0500
++++ patches/chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml	2019-12-07 19:41:01.320966048 -0500
 @@ -19,7 +19,7 @@
      in Chrome.
      </p>
@@ -18,10 +18,10 @@
 +  <url type="bugtracker">https://gitlab.com/vddvss/chromium-ppc64le/issues</url>
 +  <url type="help">https://gitlab.com/chromium-ppc64le/chromium-ppc64le</url>
  </component>
---- .pc/patches/chrome/ppc64le-branding.patch/chrome/installer/linux/common/chromium-browser/chromium-browser.info	2019-12-07 19:32:17.701335826 -0500
-+++ chrome/installer/linux/common/chromium-browser/chromium-browser.info	2019-12-07 19:45:57.172506388 -0500
+--- patches.old/chrome/ppc64le-branding.patch/chrome/installer/linux/common/chromium-browser/chromium-browser.info	2019-12-07 19:32:17.701335826 -0500
++++ patches/chrome/installer/linux/common/chromium-browser/chromium-browser.info	2019-12-07 19:45:57.172506388 -0500
 @@ -25,6 +25,6 @@
- 
+
  # Package maintainer information.
  # TODO(mmoss) Setup a mailbox for this address
 -MAINTNAME="Chromium Linux Team"

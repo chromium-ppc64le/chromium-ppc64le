@@ -119,7 +119,6 @@ $(args-gn): $(args-gn-in) $(ug-args-gn-extra) | $(target-dir)
 	    -e 's|@@JUMBO_FILE_LIMIT@@|$(JUMBO_FILE_LIMIT)|g' \
 	    $^ > $@
 
-# This is not used currently, but should work with chrome 79
 $(libdav1d-rebuilt): $(media-rebuild-prereqs) | $(chrome-dir)
 	+cd $|/third_party/dav1d && \
 	./generate_configs.py && \
@@ -144,6 +143,7 @@ $(libvpx-rebuilt): $(media-rebuild-prereqs) $(gn-exe) | $(chrome-dir)
 $(configured): $(args-gn) \
                $(ffmpeg-rebuilt) \
 	       $(libvpx-rebuilt) \
+	       $(libdav1d-rebuilt) \
 	       | $(gn-exe)
 	gn gen --root=$(chrome-dir) $(target-dir)
 	touch $@

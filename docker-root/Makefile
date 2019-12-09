@@ -13,7 +13,7 @@ include common.mk
 gn-bin-dir := $(CURDIR)/gn/out
 gn-exe := $(gn-bin-dir)/gn
 
-llvm-archive := llvm-$(llvm_rev)-ppc64le.tar.zstd
+llvm-archive := llvm-$(llvm_rev)-ppc64le.tar.zst
 llvm-dir := $(CURDIR)/llvm-$(llvm_rev)-ppc64le
 
 chrome-archive := chromium-$(chrome_ver).tar.xz
@@ -80,7 +80,6 @@ $(llvm-archive):
 
 $(llvm-dir): | $(llvm-archive)
 	tar --zstd -xf $|
-	patch -d $@ -p1 < $(CURDIR)/patches/llvm/fix-altivec.patch
 
 ###############################################################################
 # Chrome

@@ -14,6 +14,7 @@
 #   NO_UNGOOGLED_CHROMIUM - do not build ungoogled chromium
 #   NO_STANDARD_CHROMIUM  - do not build standard chromium
 #   NO_DEPLOY             - do not deploy the build artifacts to the dnf repo
+#   NO_GITHUB_RELEASE     - do not deploy the build artifacts to GitHub
 #
 
 stages:
@@ -49,6 +50,9 @@ variables:
       - $NO_STANDARD_CHROMIUM
 
 .ungoogled-build-base:
+  variables:
+    UNGOOGLED: 1
+
   except:
     variables:
       - $NO_UNGOOGLED_CHROMIUM
@@ -120,9 +124,6 @@ ungoogled:chromium:
     - .chromium-build-base
     - .ungoogled-build-base
 
-  variables:
-    UNGOOGLED: 1
-
 #
 # Package Stage
 #
@@ -180,6 +181,48 @@ ungoogled:create-repo:
 #
 # Deploy Stage
 #
+
+# Deploy the artifacts to GitHub
+.github-deploy-base:
+  # This runs on a shared x86 builder
+  image: fedora:latest
+  stage: deploy
+
+  only:
+    - tags
+    - web
+
+  except:
+    variables:
+      - $NO_DEPLOY
+      - $NO_GITHUB_RELEASE
+
+  script:
+    - dnf install
+        --setopt=install_weak_deps=False
+        --disablerepo="*modular*"
+        -y make perl-Data-Dumper perl-Net-GitHub
+    - make -C docker-root github-upload-release
+
+github-deploy:
+  extends:
+    - .github-deploy-base
+    - .standard-build-base
+
+  needs: ['chromium']
+  dependencies:
+    - chromium
+
+ungoogled:github-deploy:
+  extends:
+    - .github-deploy-base
+    - .ungoogled-build-base
+
+  needs: ['ungoogled:chromium']
+  dependencies:
+    - 'ungoogled:chromium'
+
+# Deploy the artifacts to the repository
 .repo-deploy-base:
   # This runs on a shared x86 builder
   image: fedora:latest

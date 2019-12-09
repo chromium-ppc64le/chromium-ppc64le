@@ -3,7 +3,10 @@
 This repository contains a framework for building and distributing RPMs and
 tarballs for Chromium on ppc64le. The repository provides two flavors of
 Chromium, one that is largely the same as upstream's, and another containing the
-[Ungoogled Chromium patchset](https://gitlab.com/chromium-ppc64le/ungoogled-chromium).
+[Ungoogled Chromium patchset](https://gitlab.com/chromium-ppc64le/ungoogled-chromium),
+which removes dependencies on Google web services. It also features some tweaks
+to enhance privacy, control, and transparency (almost all of which require
+manual activation or enabling).
 
 ## Installation
 
@@ -36,6 +39,18 @@ sudo dnf install chromium-browser-stable
 
 ```bash
 sudo dnf install ungoogled-chromium-browser-stable
+```
+
+###### Note for Existing Users of Ungoogled Chromium
+
+In order to allow parallel installation of both versions of Chromium, This
+repository contains a patch to change the default location of the Ungoogled
+Chromium profile from `~/.config/chromium` to `~/.config/ungoogled-chromium`.
+
+To use your existing profile with Ungoogled Chromium, simply run:
+
+```
+mv ~/.config/chromium ~/.config/ungoogled-chromium
 ```
 
 ### Other Distributions

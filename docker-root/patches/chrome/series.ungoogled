@@ -1,5 +1,6 @@
 enable-rpm-build-ungoogled-chromium.patch
 ungoogled-chromium-branding.patch
+ungoogled-chromium-profile.patch
 
 ungoogled-chromium/patches/core/inox-patchset/chromium-exclude_unwind_tables.patch
 ungoogled-chromium/patches/core/inox-patchset/0001-fix-building-without-safebrowsing.patch
@@ -37,6 +38,7 @@ ungoogled-chromium/patches/core/ungoogled-chromium/use-local-devtools-files.patc
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-network-time-tracker.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-mei-preload.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/fix-building-without-safebrowsing.patch
+ungoogled-chromium/patches/core/ungoogled-chromium/remove-unused-preferences-fields.patch
 ungoogled-chromium/patches/core/bromite/disable-fetching-field-trials.patch
 
 ungoogled-chromium/patches/extra/inox-patchset/chromium-widevine.patch

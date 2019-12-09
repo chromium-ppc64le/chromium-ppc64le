@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-release_tag := v$(chrome_ver)-$(chrome_rpm_release)
 download_url_base := https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download
 download_url := $(download_url_base)/$(release_tag)
 

@@ -1,0 +1,23 @@
+--- chromium-79.0.3945.79.orig/chrome/browser/flag-metadata.json
++++ chromium-79.0.3945.79/chrome/browser/flag-metadata.json
+@@ -2813,17 +2813,17 @@
+   {
+     "name": "overlay-scrollbars",
+     "owners": [ "chaopeng", "bokan", "input-dev" ],
+-    "expiry_milestone": 76
++    "expiry_milestone": -1
+   },
+   {
+     "name": "overlay-scrollbars-flash-after-scroll-update",
+     "owners": [ "chaopeng", "bokan", "input-dev" ],
+-    "expiry_milestone": 76
++    "expiry_milestone": -1
+   },
+   {
+     "name": "overlay-scrollbars-flash-when-mouse-enter",
+     "owners": [ "chaopeng", "bokan", "input-dev" ],
+-    "expiry_milestone": 76
++    "expiry_milestone": -1
+   },
+   {
+     "name": "overlay-strategies",

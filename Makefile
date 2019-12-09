@@ -7,6 +7,8 @@
 
 include docker-root/common.mk
 
+release_tag := v$(chrome_ver)-$(chrome_rpm_release)
+
 $(artifact-dir):
 	mkdir -p $@
 
@@ -48,6 +50,13 @@ gitlab-upload-release:
 	     --header "PRIVATE-TOKEN: $(GITLAB_API_TOKEN)" \
 	     --data "$$release_json_template" \
 	     --request POST https://gitlab.com/api/v4/projects/15365525/releases
+
+.PHONY: github-upload-release
+github-upload-release:
+	./create-github-release.pl \
+	    $(release_tag) \
+	    $(chrome-rpm-artifact) \
+	    $(chrome-dist-artifact)
 
 .PHONY: clean
 clean:
