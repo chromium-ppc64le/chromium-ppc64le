@@ -192,6 +192,8 @@ ungoogled:create-repo:
     - tags
     - web
 
+  allow_failure: true
+
   except:
     variables:
       - $NO_DEPLOY
