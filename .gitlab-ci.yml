@@ -112,7 +112,7 @@ build-container:
     paths:
       - docker-root/.ccache
       - docker-root/chromium-*.tar.xz
-      - docker-root/llvm-*.tar.zstd
+      - docker-root/llvm-*.tar.zst
 
 chromium:
   extends:

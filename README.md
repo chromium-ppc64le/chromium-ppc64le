@@ -247,8 +247,8 @@ Submodules are licensed under the respective license in the repository.
       <td>v78.0.3904.108-1</td>
       <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm">rpm</a></td>
       <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/chromium-browser-stable-78.0.3904.108-1.tar.xz">.tar.xz</a></td>
-      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/ungoogled-chromium-browser-stable-78.0.3904.108-1.ppc64le.rpm">rpm</a></td>
-      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v78.0.3904.108-1/ungoogled-chromium-browser-stable-78.0.3904.108-1.tar.xz">.tar.xz</a></td>
+      <td align="center">rpm</td>
+      <td align="center">.tar.xz</td>
     </tr>
   </tbody>
 </table>
