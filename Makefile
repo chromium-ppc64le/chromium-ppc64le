@@ -52,11 +52,12 @@ gitlab-upload-release:
 	     --request POST https://gitlab.com/api/v4/projects/15365525/releases
 
 .PHONY: github-upload-release
+github-upload-release: artifact_prefix=$(CURDIR)
 github-upload-release:
 	./create-github-release.pl \
 	    $(release_tag) \
-	    $(chrome-rpm-artifact) \
-	    $(chrome-dist-artifact)
+	    $(artifact_prefix)/$(chrome-rpm-artifact) \
+	    $(artifact_prefix)/$(chrome-dist-artifact)
 
 .PHONY: clean
 clean:
