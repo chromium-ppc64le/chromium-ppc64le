@@ -44,8 +44,8 @@ update-readme:
 include release-json-template.mk
 .PHONY: gitlab-upload-release
 gitlab-upload-release:
-	@[ -n $$GITLAB_API_TOKEN -a -n $$CI_JOB_URL ] || \
-	    (echo "GITLAB_API_TOKEN and CI_JOB_URL must be defined." ; exit 1)
+	@[ -n $$GITLAB_API_TOKEN ] || \
+	    (echo "GITLAB_API_TOKEN must be defined." ; exit 1)
 	curl --header 'Content-Type: application/json' \
 	     --header "PRIVATE-TOKEN: $(GITLAB_API_TOKEN)" \
 	     --data "$$release_json_template" \
