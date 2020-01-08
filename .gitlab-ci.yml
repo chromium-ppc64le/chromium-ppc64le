@@ -205,7 +205,8 @@ ungoogled:create-repo:
         --setopt=install_weak_deps=False
         --disablerepo="*modular*"
         -y make perl-Data-Dumper perl-Net-GitHub
-    - make github-upload-release artifact_prefix=docker-root
+    - make github-upload-release artifact_prefix=docker-root \
+        GITHUB_API_TOKEN=$GITHUB_API_TOKEN
 
 github-deploy:
   extends:

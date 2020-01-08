@@ -14,7 +14,7 @@ sudo rpm -Uvh $(download_url)/$(chrome-rpm-file-name)
 .
 
 /^\[latest standard build\].\+)$$/c
-[latest standard build]($(download_url)/$(chrome-rpm-file-name))
+[latest standard build]($(download_url)/$(chrome-dist-file-name))
 .
 
 /<!-- RPM UNGOOGLED INSTALL COMMAND -->/+2c
@@ -22,7 +22,7 @@ sudo rpm -Uvh $(download_url)/ungoogled-$(chrome-rpm-file-name)
 .
 
 /^\[latest Ungoogled Chromium build\].\+)$$/c
-[latest Ungoogled Chromium build]($(download_url)/ungoogled-$(chrome-rpm-file-name))
+[latest Ungoogled Chromium build]($(download_url)/ungoogled-$(chrome-dist-file-name))
 .
 
 /<!-- CURRENT ROW -->/+;+6c
