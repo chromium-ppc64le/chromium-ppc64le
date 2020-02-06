@@ -158,10 +158,9 @@ create-repo:
     - .create-repo-base
     - .standard-build-base
 
-  # TODO: after GitLab 12.6, use https://docs.gitlab.com/ee/ci/yaml/README.html#artifact-downloads-with-needs
-  needs: ['chromium']
-  dependencies:
-    - chromium
+  needs:
+    - job: chromium
+      artifacts: true
 
   variables:
     PRODUCT_NAME: chromium
@@ -171,9 +170,9 @@ ungoogled:create-repo:
     - .create-repo-base
     - .ungoogled-build-base
 
-  needs: ['ungoogled:chromium']
-  dependencies:
-    - 'ungoogled:chromium'
+  needs:
+    - job: ungoogled:chromium
+      artifacts: true
 
   variables:
     PRODUCT_NAME: ungoogled-chromium
@@ -213,18 +212,18 @@ github-deploy:
     - .github-deploy-base
     - .standard-build-base
 
-  needs: ['chromium']
-  dependencies:
-    - chromium
+  needs:
+    - job: chromium
+      artifacts: true
 
 ungoogled:github-deploy:
   extends:
     - .github-deploy-base
     - .ungoogled-build-base
 
-  needs: ['ungoogled:chromium']
-  dependencies:
-    - 'ungoogled:chromium'
+  needs:
+    - job: ungoogled:chromium
+      artifacts: true
 
 # Deploy the artifacts to the repository
 .repo-deploy-base:
@@ -262,9 +261,9 @@ repo-deploy:
   extends:
     - .repo-deploy-base
     - .standard-build-base
-  needs: ['create-repo']
-  dependencies:
-    - create-repo
+  needs:
+    - job: create-repo
+      artifacts: true
 
   variables:
     DOWNSTREAM_PROJECT_ID: 15569783 # chromium-ppc64le/dnf/chromium
@@ -273,9 +272,9 @@ ungoogled:repo-deploy:
   extends:
     - .repo-deploy-base
     - .ungoogled-build-base
-  needs: ['ungoogled:create-repo']
-  dependencies:
-    - 'ungoogled:create-repo'
+  needs:
+    - job: ungoogled:create-repo
+      artifacts: true
 
   variables:
     DOWNSTREAM_PROJECT_ID: 15606466 # chromium-ppc64le/dnf/ungoogled-chromium

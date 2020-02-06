@@ -6,6 +6,7 @@
 #
 
 use strict;
+use warnings;
 
 use File::Basename;
 
@@ -35,16 +36,20 @@ $repos->set_default_user_repo('chromium-ppc64le', 'chromium-ppc64le');
 
 my @releases = grep { $_->{tag_name} eq $chromium_tag } $repos->releases();
 
-my $release = @releases ? {
-    print "Using existing GitHub release:\n",
-    $releases[0]
-} : {
-    print "Creating GitHub release:\n",
-    $repos->create_release({
+print Dumper(\@releases);
+
+my $release;
+
+if (@releases) {
+    print "Using existing GitHub release:\n";
+    $release = $releases[0];
+} else {
+    print "Creating GitHub release:\n";
+    $release = $repos->create_release({
         "tag_name" => "$chromium_tag",
         "name" => "Chromium $chromium_tag"
     })
-};
+}
 
 print Dumper(\$release);
 

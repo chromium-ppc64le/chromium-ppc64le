@@ -7,15 +7,11 @@ NUM_THREADS ?= 16
 CONCURRENT_LINKS ?= 2
 USE_LTO ?= true
 
-USE_JUMBO ?= true
-# changed to 25 temporarily, since 50 was broken on 79
-JUMBO_FILE_LIMIT ?= 25
-
 artifact-dir := target
 
 # llvm_rev is from $(chrome-dir)/tools/clang/scripts/update.py
-llvm_rev := 64a362e7216a43e3ad44e50a89265e72aeb14294
-chrome_ver := 79.0.3945.130
+llvm_rev := c2443155a0fb245c8f17f2c1c72b6ea391e86e81
+chrome_ver := 80.0.3987.87
 chrome_channel := stable
 # the rpm release number is hardcoded in
 # $(chrome-dir)/chrome/installer/linux/common/installer.include, but it should

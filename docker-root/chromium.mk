@@ -115,8 +115,6 @@ $(args-gn): $(args-gn-in) $(ug-args-gn-extra) | $(target-dir)
 	sed -e 's|@@CLANG_BASE_PATH@@|$(llvm-dir)|g' \
 	    -e 's|@@CONCURRENT_LINKS@@|$(CONCURRENT_LINKS)|g' \
 	    -e 's|@@USE_LTO@@|$(USE_LTO)|g' \
-	    -e 's|@@USE_JUMBO@@|$(USE_JUMBO)|g' \
-	    -e 's|@@JUMBO_FILE_LIMIT@@|$(JUMBO_FILE_LIMIT)|g' \
 	    $^ > $@
 
 $(libdav1d-rebuilt): $(media-rebuild-prereqs) | $(chrome-dir)
