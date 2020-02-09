@@ -1,11 +1,11 @@
---- chromium-79.0.3945.79.orig/chrome/common/chrome_paths_linux.cc
-+++ chromium-79.0.3945.79/chrome/common/chrome_paths_linux.cc
+--- chromium-80.0.3987.87.orig/chrome/common/chrome_paths_linux.cc
++++ chromium-80.0.3987.87/chrome/common/chrome_paths_linux.cc
 @@ -91,7 +91,7 @@ bool GetDefaultUserDataDirectory(base::F
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-   *result = config_dir.Append("google-chrome" + GetChannelSuffixForDataDir());
+   std::string data_dir_basename = "google-chrome";
  #else
--  *result = config_dir.Append("chromium");
-+  *result = config_dir.Append("ungoogled-chromium");
+-  std::string data_dir_basename = "chromium";
++  std::string data_dir_basename = "ungoogled-chromium";
  #endif
+   *result = config_dir.Append(data_dir_basename + GetChannelSuffixForDataDir());
    return true;
- }
