@@ -7,5 +7,4 @@ change-user-agent.patch
 ffmpeg-ccache.patch
 skia-vsx-instructions.patch
 overlay-scrollbars.patch
-gl-bug-workaround.patch
 
