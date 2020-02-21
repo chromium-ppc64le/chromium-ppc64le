@@ -44,7 +44,8 @@ ignored_warnings := -Wno-shorten-64-to-32 \
 		    -Wno-string-plus-int \
 		    -Wno-constant-conversion \
 		    -Wno-incompatible-pointer-types-discards-qualifiers \
-		    -Wno-unused-label
+		    -Wno-unused-label \
+		    -Wno-unknown-warning-option
 opt_flags := -mcpu=power9 -mtune=power9
 
 export CFLAGS ?= $(ignored_warnings) $(opt_flags)
