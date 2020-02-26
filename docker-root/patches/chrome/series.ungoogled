@@ -37,7 +37,7 @@ ungoogled-chromium/patches/core/ungoogled-chromium/use-local-devtools-files.patc
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-network-time-tracker.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-mei-preload.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/fix-building-without-safebrowsing.patch
-remove-unused-preferences-fields-chrome-80.0.3987.122.patch
+ungoogled-chromium/patches/core/ungoogled-chromium/remove-unused-preferences-fields.patch
 ungoogled-chromium/patches/core/bromite/disable-fetching-field-trials.patch
 
 ungoogled-chromium/patches/extra/inox-patchset/chromium-widevine.patch
