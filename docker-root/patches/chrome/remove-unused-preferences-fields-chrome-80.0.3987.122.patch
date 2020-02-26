@@ -2215,7 +2215,7 @@
        url_(web_contents->GetLastCommittedURL()),
        password_type_(password_type) {
    DialogDelegate::set_button_label(ui::DIALOG_BUTTON_OK,
-@@ -143,33 +142,14 @@ PasswordReuseModalWarningDialog::Passwor
+@@ -143,30 +142,14 @@ PasswordReuseModalWarningDialog::Passwor
        ui::DIALOG_BUTTON_CANCEL,
        l10n_util::GetStringUTF16(IDS_PAGE_INFO_IGNORE_PASSWORD_WARNING_BUTTON));
  
@@ -2235,10 +2235,7 @@
 -        placeholder_offsets);
 -  } else {
 -    views::Label* message_body_label = CreateMessageBodyLabel(
--        service_
--            ? service_->GetWarningDetailText(password_type,
--                                             &placeholder_offsets)
--            : l10n_util::GetStringUTF16(IDS_PAGE_INFO_CHANGE_PASSWORD_DETAILS));
+-        l10n_util::GetStringUTF16(IDS_PAGE_INFO_CHANGE_PASSWORD_DETAILS));
 -    CreateGaiaPasswordReuseModalWarningDialog(message_body_label);
 -  }
 +  views::Label* message_body_label = CreateMessageBodyLabel(
