@@ -68,11 +68,11 @@ mv ~/.config/chromium ~/.config/ungoogled-chromium
   <tbody>
 <!-- CURRENT ROW -->
     <tr>
-      <td>v80.0.3987.122-1</td>
-      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/chromium-browser-stable-80.0.3987.122-1.ppc64le.rpm">rpm</a></td>
-      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/chromium-browser-stable-80.0.3987.122-1.tar.xz">.tar.xz</a></td>
-      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/ungoogled-chromium-browser-stable-80.0.3987.122-1.ppc64le.rpm">rpm</a></td>
-      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/ungoogled-chromium-browser-stable-80.0.3987.122-1.tar.xz">.tar.xz</a></td>
+      <td>v80.0.3987.132-1</td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.132-1/chromium-browser-stable-80.0.3987.132-1.ppc64le.rpm">rpm</a></td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.132-1/chromium-browser-stable-80.0.3987.132-1.tar.xz">.tar.xz</a></td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.132-1/ungoogled-chromium-browser-stable-80.0.3987.132-1.ppc64le.rpm">rpm</a></td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.132-1/ungoogled-chromium-browser-stable-80.0.3987.132-1.tar.xz">.tar.xz</a></td>
     </tr>
   </tbody>
 </table>
@@ -88,22 +88,22 @@ possible, but it has not been tested.
 
 <!-- RPM INSTALL COMMAND -->
 ```bash
-sudo rpm -Uvh https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/chromium-browser-stable-80.0.3987.122-1.ppc64le.rpm
+sudo rpm -Uvh https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.132-1/chromium-browser-stable-80.0.3987.132-1.ppc64le.rpm
 ```
 
 ###### Ungoogled Chromium
 
 <!-- RPM UNGOOGLED INSTALL COMMAND -->
 ```bash
-sudo rpm -Uvh https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/ungoogled-chromium-browser-stable-80.0.3987.122-1.ppc64le.rpm
+sudo rpm -Uvh https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.132-1/ungoogled-chromium-browser-stable-80.0.3987.132-1.ppc64le.rpm
 ```
 
 #### Other Distributions
 
 Just download the
-[latest standard build](https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/chromium-browser-stable-80.0.3987.122-1.tar.xz)
+[latest standard build](https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.132-1/chromium-browser-stable-80.0.3987.132-1.tar.xz)
 or the
-[latest Ungoogled Chromium build](https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/ungoogled-chromium-browser-stable-80.0.3987.122-1.tar.xz)
+[latest Ungoogled Chromium build](https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.132-1/ungoogled-chromium-browser-stable-80.0.3987.132-1.tar.xz)
 and extract it.
 
 ## Building from Source
@@ -235,6 +235,13 @@ Submodules are licensed under the respective license in the repository.
   </thead>
   <tbody>
 <!-- ARCHIVE ROW -->
+    <tr>
+      <td>v80.0.3987.122-1</td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/chromium-browser-stable-80.0.3987.122-1.ppc64le.rpm">rpm</a></td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/chromium-browser-stable-80.0.3987.122-1.tar.xz">.tar.xz</a></td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/ungoogled-chromium-browser-stable-80.0.3987.122-1.ppc64le.rpm">rpm</a></td>
+      <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.122-1/ungoogled-chromium-browser-stable-80.0.3987.122-1.tar.xz">.tar.xz</a></td>
+    </tr>
     <tr>
       <td>v80.0.3987.116-1</td>
       <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v80.0.3987.116-1/chromium-browser-stable-80.0.3987.116-1.ppc64le.rpm">rpm</a></td>
