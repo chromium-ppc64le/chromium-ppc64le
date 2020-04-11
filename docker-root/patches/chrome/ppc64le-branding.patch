@@ -1,6 +1,6 @@
---- patches.old/chrome/ppc64le-branding.patch/chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml	2019-12-07 19:33:39.523464964 -0500
-+++ patches/chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml	2019-12-07 19:41:01.320966048 -0500
-@@ -19,7 +19,7 @@
+--- chromium-81.0.4044.83.orig/chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml
++++ chromium-81.0.4044.83/chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml
+@@ -22,7 +22,7 @@
      in Chrome.
      </p>
    </description>
@@ -9,19 +9,19 @@
    <screenshots>
      <screenshot type="default">
        <image>https://www.gstatic.com/chrome/appstream/chrome-2.png</image>
-@@ -28,6 +28,6 @@
+@@ -31,6 +31,6 @@
    </screenshots>
    <translation/>
    <developer_name>The Chromium Authors</developer_name>
 -  <url type="bugtracker">https://www.chromium.org/for-testers/bug-reporting-guidelines</url>
--  <url type="help">https://chromium.googlesource.com/chromium/src/+/master/docs/linux_debugging.md</url>
+-  <url type="help">https://chromium.googlesource.com/chromium/src/+/master/docs/linux/debugging.md</url>
 +  <url type="bugtracker">https://gitlab.com/vddvss/chromium-ppc64le/issues</url>
 +  <url type="help">https://gitlab.com/chromium-ppc64le/chromium-ppc64le</url>
  </component>
---- patches.old/chrome/ppc64le-branding.patch/chrome/installer/linux/common/chromium-browser/chromium-browser.info	2019-12-07 19:32:17.701335826 -0500
-+++ patches/chrome/installer/linux/common/chromium-browser/chromium-browser.info	2019-12-07 19:45:57.172506388 -0500
-@@ -25,6 +25,6 @@
-
+--- chromium-81.0.4044.83.orig/chrome/installer/linux/common/chromium-browser/chromium-browser.info
++++ chromium-81.0.4044.83/chrome/installer/linux/common/chromium-browser/chromium-browser.info
+@@ -25,6 +25,6 @@ FULLDESC="Chromium is a browser that com
+ 
  # Package maintainer information.
  # TODO(mmoss) Setup a mailbox for this address
 -MAINTNAME="Chromium Linux Team"

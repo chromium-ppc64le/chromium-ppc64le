@@ -2,13 +2,11 @@ enable-rpm-build-ungoogled-chromium.patch
 ungoogled-chromium-branding.patch
 ungoogled-chromium-profile.patch
 
-ungoogled-chromium/patches/core/inox-patchset/chromium-exclude_unwind_tables.patch
 ungoogled-chromium/patches/core/inox-patchset/0001-fix-building-without-safebrowsing.patch
 ungoogled-chromium/patches/core/inox-patchset/0003-disable-autofill-download-manager.patch
 ungoogled-chromium/patches/core/inox-patchset/0005-disable-default-extensions.patch
 ungoogled-chromium/patches/core/inox-patchset/0007-disable-web-resource-service.patch
 ungoogled-chromium/patches/core/inox-patchset/0009-disable-google-ipv6-probes.patch
-ungoogled-chromium/patches/core/inox-patchset/0010-disable-gcm-status-check.patch
 ungoogled-chromium/patches/core/inox-patchset/0014-disable-translation-lang-fetch.patch
 ungoogled-chromium/patches/core/inox-patchset/0015-disable-update-pings.patch
 ungoogled-chromium/patches/core/inox-patchset/0017-disable-new-avatar-menu.patch
@@ -37,10 +35,8 @@ ungoogled-chromium/patches/core/ungoogled-chromium/use-local-devtools-files.patc
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-network-time-tracker.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-mei-preload.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/fix-building-without-safebrowsing.patch
-remove-unused-preferences-fields.patch
+ungoogled-chromium/patches/core/ungoogled-chromium/remove-unused-preferences-fields.patch
 ungoogled-chromium/patches/core/bromite/disable-fetching-field-trials.patch
-
-ungoogled-chromium/patches/extra/inox-patchset/chromium-widevine.patch
 ungoogled-chromium/patches/extra/inox-patchset/0006-modify-default-prefs.patch
 ungoogled-chromium/patches/extra/inox-patchset/0008-restore-classic-ntp.patch
 ungoogled-chromium/patches/extra/inox-patchset/0011-add-duckduckgo-search-engine.patch
@@ -49,7 +45,6 @@ ungoogled-chromium/patches/extra/inox-patchset/0016-chromium-sandbox-pie.patch
 ungoogled-chromium/patches/extra/inox-patchset/0018-disable-first-run-behaviour.patch
 ungoogled-chromium/patches/extra/inox-patchset/0019-disable-battery-status-service.patch
 ungoogled-chromium/patches/extra/debian/gn/parallel.patch
-ungoogled-chromium/patches/extra/debian/fixes/ps-print.patch
 ungoogled-chromium/patches/extra/debian/fixes/connection-message.patch
 ungoogled-chromium/patches/extra/debian/disable/android.patch
 ungoogled-chromium/patches/extra/debian/disable/fuzzers.patch
@@ -89,4 +84,3 @@ ungoogled-chromium/patches/extra/ungoogled-chromium/enable-paste-and-go-new-tab-
 ungoogled-chromium/patches/extra/bromite/fingerprinting-flags-client-rects-and-measuretext.patch
 ungoogled-chromium/patches/extra/bromite/flag-max-connections-per-host.patch
 ungoogled-chromium/patches/extra/bromite/flag-fingerprinting-canvas-image-data-noise.patch
-

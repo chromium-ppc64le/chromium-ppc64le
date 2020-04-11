@@ -1,4 +1,4 @@
-build-root/
+build-root*/
 target/
 *.stamp
 *.bak

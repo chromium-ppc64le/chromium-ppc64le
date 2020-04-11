@@ -27,7 +27,7 @@ enable_dav1d_decoder=true
 enable_libaom_decoder=false
 
 # GPU
-use_vaapi=true
+use_vaapi=false # currently broken
 
 # Disable unsupported features
 enable_nacl=false

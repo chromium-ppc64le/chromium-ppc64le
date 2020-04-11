@@ -28,6 +28,7 @@ RUN dnf -y update && \
         libstdc++-static \
         libva-devel \
         make \
+        mesa-libgbm-devel \
         meson \
         ninja-build \
         nodejs \

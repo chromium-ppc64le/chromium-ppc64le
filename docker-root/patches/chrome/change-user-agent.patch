@@ -1,16 +1,16 @@
---- chromium-79.0.3945.36.orig/content/common/user_agent.cc
-+++ chromium-79.0.3945.36/content/common/user_agent.cc
-@@ -100,7 +100,7 @@ std::string BuildOSCpuInfo(bool include_
+--- chromium-81.0.4044.83.orig/content/common/user_agent.cc
++++ chromium-81.0.4044.83/content/common/user_agent.cc
+@@ -87,7 +87,7 @@ std::string BuildCpuInfo() {
        sizeof(void*) == sizeof(int32_t)) {
-     cputype.assign("i686 (x86_64)");
+     cpuinfo.assign("i686 (x86_64)");
    } else {
--    cputype.assign(unixinfo.machine);
-+    cputype.assign("x86_64");
+-    cpuinfo.assign(unixinfo.machine);
++    cpuinfo.assign("x86_64");
    }
  #endif
  
---- chromium-79.0.3945.36.orig/third_party/blink/renderer/core/frame/navigator_id.cc
-+++ chromium-79.0.3945.36/third_party/blink/renderer/core/frame/navigator_id.cc
+--- chromium-81.0.4044.83.orig/third_party/blink/renderer/core/frame/navigator_id.cc
++++ chromium-81.0.4044.83/third_party/blink/renderer/core/frame/navigator_id.cc
 @@ -83,7 +83,7 @@ String NavigatorID::platform() const {
    if (platform_name->IsNull()) {
      *platform_name =

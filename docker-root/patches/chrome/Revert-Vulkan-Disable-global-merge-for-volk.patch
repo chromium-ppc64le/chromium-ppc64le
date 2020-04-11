@@ -1,0 +1,31 @@
+--- chromium-81.0.4044.92.orig/third_party/angle/src/third_party/volk/BUILD.gn
++++ chromium-81.0.4044.92/third_party/angle/src/third_party/volk/BUILD.gn
+@@ -6,27 +6,12 @@ config("volk_config") {
+   include_dirs = [ "." ]
+ }
+ 
+-# TODO(anglebug.com/4351): Remove this after clang rolls.
+-config("volk_internal_config") {
+-  if (is_clang) {
+-    cflags = [
+-      "-Xclang",
+-      "-mllvm",
+-      "-Xclang",
+-      "--enable-global-merge=false",
+-    ]
+-  }
+-}
+-
+ source_set("volk") {
+   sources = [
+     "volk.c",
+     "volk.h",
+   ]
+-  public_configs = [
+-    ":volk_config",
+-    ":volk_internal_config",
+-  ]
++  public_configs = [ ":volk_config" ]
+   public_deps = [
+     "../../../third_party/vulkan-headers/src:vulkan_headers",
+   ]
