@@ -1,6 +1,5 @@
 0001-Add-PPC64-support-for-libdav1d.patch
 0001-Fix-libdav1d-compilation-on-clang-ppc.patch
-Revert-Vulkan-Disable-global-merge-for-volk.patch
 #enable-vaapi.patch
 enable-rpm-build.patch
 ppc64le-branding.patch

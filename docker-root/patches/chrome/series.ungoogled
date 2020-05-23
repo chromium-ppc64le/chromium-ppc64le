@@ -36,7 +36,9 @@ ungoogled-chromium/patches/core/ungoogled-chromium/disable-network-time-tracker.
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-mei-preload.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/fix-building-without-safebrowsing.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/remove-unused-preferences-fields.patch
+ungoogled-chromium/patches/core/ungoogled-chromium/fix-building-without-enabling-reporting.patch
 ungoogled-chromium/patches/core/bromite/disable-fetching-field-trials.patch
+
 ungoogled-chromium/patches/extra/inox-patchset/0006-modify-default-prefs.patch
 ungoogled-chromium/patches/extra/inox-patchset/0008-restore-classic-ntp.patch
 ungoogled-chromium/patches/extra/inox-patchset/0011-add-duckduckgo-search-engine.patch
@@ -59,7 +61,7 @@ ungoogled-chromium/patches/extra/iridium-browser/prefs-always-prompt-for-downloa
 ungoogled-chromium/patches/extra/iridium-browser/updater-disable-auto-update.patch
 ungoogled-chromium/patches/extra/iridium-browser/Remove-EV-certificates.patch
 ungoogled-chromium/patches/extra/iridium-browser/browser-disable-profile-auto-import-on-first-run.patch
-ungoogled-chromium/patches/extra/ungoogled-chromium/add-third-party-ungoogled.patch
+ungoogled-chromium/patches/extra/ungoogled-chromium/add-components-ungoogled.patch
 ungoogled-chromium/patches/extra/ungoogled-chromium/disable-formatting-in-omnibox.patch
 ungoogled-chromium/patches/extra/ungoogled-chromium/popups-to-tabs.patch
 ungoogled-chromium/patches/extra/ungoogled-chromium/add-ipv6-probing-option.patch
@@ -81,6 +83,8 @@ ungoogled-chromium/patches/extra/ungoogled-chromium/add-flag-to-hide-crashed-bub
 ungoogled-chromium/patches/extra/ungoogled-chromium/default-to-https-scheme.patch
 ungoogled-chromium/patches/extra/ungoogled-chromium/add-flag-to-scroll-tabs.patch
 ungoogled-chromium/patches/extra/ungoogled-chromium/enable-paste-and-go-new-tab-button.patch
+ungoogled-chromium/patches/extra/ungoogled-chromium/enable-checkbox-external-protocol.patch
 ungoogled-chromium/patches/extra/bromite/fingerprinting-flags-client-rects-and-measuretext.patch
 ungoogled-chromium/patches/extra/bromite/flag-max-connections-per-host.patch
 ungoogled-chromium/patches/extra/bromite/flag-fingerprinting-canvas-image-data-noise.patch
+
