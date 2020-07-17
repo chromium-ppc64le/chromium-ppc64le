@@ -41,8 +41,12 @@ RUN dnf -y update && \
         quilt \
         rpm-build \
         wget \
+        xcb-proto \
         xz \
     && dnf clean all
+
+# hack to chromium still uses python 2.7...
+RUN cp -r /usr/lib/python3.7/site-packages/xcbgen /usr/lib/python2.7/site-packages
 
 RUN mkdir -p /workdir
 WORKDIR /workdir
