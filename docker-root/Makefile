@@ -69,6 +69,7 @@ $(gn-exe): export CC := ccache /usr/bin/clang
 $(gn-exe): export CXX := ccache /usr/bin/clang++
 $(gn-exe): | gn
 	cd gn && \
+	git checkout 1a34e42 && \
 	python build/gen.py && \
 	ninja -j $(NUM_THREADS) -C out
 	ccache --show-stats
