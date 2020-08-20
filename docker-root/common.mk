@@ -11,7 +11,7 @@ artifact-dir := target
 
 # llvm_rev is from $(chrome-dir)/tools/clang/scripts/update.py
 llvm_rev := 99ac9ce7016d701b43b8f0c308dc3463da57d983
-chrome_ver := 84.0.4147.125
+chrome_ver := 84.0.4147.135
 chrome_channel := stable
 # the rpm release number is hardcoded in
 # $(chrome-dir)/chrome/installer/linux/common/installer.include, but it should
