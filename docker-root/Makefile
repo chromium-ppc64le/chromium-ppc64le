@@ -27,7 +27,7 @@ export chrome-dir llvm-dir gn-exe gn-bin-dir
 # External Assets
 ###############################################################################
 gn_url := https://gn.googlesource.com/gn
-llvm_url := https://github.com/chromium-ppc64le/llvm-builds/releases/download/v$(llvm_rev)/$(llvm-archive)
+llvm_url := https://gitlab.com/api/v4/projects/15464360/packages/generic/llvm-builds/0.0.0/$(llvm-archive)
 chrome_url := \
     https://commondatastorage.googleapis.com/chromium-browser-official/$(chrome-archive)
 
