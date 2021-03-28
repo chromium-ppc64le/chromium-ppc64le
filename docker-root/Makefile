@@ -81,7 +81,7 @@ $(llvm-archive):
 	wget -q $(llvm_url)
 
 $(llvm-dir): | $(llvm-archive)
-	tar --zstd -xf $|
+	tar -I zstd -xf $|
 
 ###############################################################################
 # Chrome
