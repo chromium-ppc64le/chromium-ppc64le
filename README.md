@@ -11,7 +11,8 @@ manual activation or enabling).
 ## Installation
 
 The easiest way to install is to add the repository, which is currently only
-available for Fedora and RHEL/CentOS.
+available for Fedora 29, RHEL 8.3, CentOS 8.2 or newer. It might also work
+with distribution with glibc 2.28 or newer.
 
 ### Fedora, RHEL, and CentOS
 

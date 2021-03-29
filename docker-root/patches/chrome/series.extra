@@ -8,4 +8,4 @@ ffmpeg-ccache.patch
 skia-vsx-instructions.patch
 overlay-scrollbars.patch
 fix-swiftshader-link.patch
-
+fix-ppc64-linux-syscalls-headers.patch
