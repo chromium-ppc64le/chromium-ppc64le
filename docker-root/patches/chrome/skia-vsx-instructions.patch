@@ -1,5 +1,5 @@
---- chromium-84.0.4147.89.orig/third_party/skia/BUILD.gn
-+++ chromium-84.0.4147.89/third_party/skia/BUILD.gn
+--- chromium-85.0.4183.133.orig/third_party/skia/BUILD.gn
++++ chromium-85.0.4183.133/third_party/skia/BUILD.gn
 @@ -132,7 +132,8 @@ template("opts") {
  is_x86 = current_cpu == "x64" || current_cpu == "x86"
  
@@ -38,8 +38,8 @@
    ]
  
    # This file (and all GN files in Skia) are designed to work with an
---- chromium-84.0.4147.89.orig/third_party/skia/gn/BUILD.gn
-+++ chromium-84.0.4147.89/third_party/skia/gn/BUILD.gn
+--- chromium-85.0.4183.133.orig/third_party/skia/gn/BUILD.gn
++++ chromium-85.0.4183.133/third_party/skia/gn/BUILD.gn
 @@ -171,6 +171,8 @@ config("default") {
        "-mfpmath=sse",
      ]
@@ -49,16 +49,17 @@
    }
  
    if (malloc != "" && !is_win) {
---- chromium-84.0.4147.89.orig/third_party/skia/gn/shared_sources.gni
-+++ chromium-84.0.4147.89/third_party/skia/gn/shared_sources.gni
-@@ -26,4 +26,5 @@ skia_opts = {
+--- chromium-85.0.4183.133.orig/third_party/skia/gn/shared_sources.gni
++++ chromium-85.0.4183.133/third_party/skia/gn/shared_sources.gni
+--- chromium-85.0.4183.133.orig/third_party/skia/include/core/SkTypes.h
+@@ -26,5 +26,6 @@ skia_opts = {
    sse42_sources = sse42
    avx_sources = avx
    hsw_sources = hsw
 +  vsx_sources = ssse3
+   skx_sources = skx
  }
---- chromium-84.0.4147.89.orig/third_party/skia/include/core/SkTypes.h
-+++ chromium-84.0.4147.89/third_party/skia/include/core/SkTypes.h
++++ chromium-85.0.4183.133/third_party/skia/include/core/SkTypes.h
 @@ -171,6 +171,42 @@
      #define SK_ARM_HAS_CRC32
  #endif
@@ -102,8 +103,8 @@
  
  // DLL/.so exports.
  #if !defined(SKIA_IMPLEMENTATION)
---- chromium-84.0.4147.89.orig/third_party/skia/include/private/SkVx.h
-+++ chromium-84.0.4147.89/third_party/skia/include/private/SkVx.h
+--- chromium-85.0.4183.133.orig/third_party/skia/include/private/SkVx.h
++++ chromium-85.0.4183.133/third_party/skia/include/private/SkVx.h
 @@ -32,6 +32,15 @@
      #include <immintrin.h>
  #elif defined(__ARM_NEON)
@@ -155,8 +156,8 @@
 +#undef HAS_PPC64_SSE_COMPAT
  
  #endif//SKVX_DEFINED
---- chromium-84.0.4147.89.orig/third_party/skia/src/core/SkSpinlock.cpp
-+++ chromium-84.0.4147.89/third_party/skia/src/core/SkSpinlock.cpp
+--- chromium-85.0.4183.133.orig/third_party/skia/src/core/SkSpinlock.cpp
++++ chromium-85.0.4183.133/third_party/skia/src/core/SkSpinlock.cpp
 @@ -31,7 +31,8 @@
  #endif
  
@@ -167,8 +168,8 @@
      #include <emmintrin.h>
      static void do_pause() { _mm_pause(); }
  #else
---- chromium-84.0.4147.89.orig/third_party/skia/src/opts/SkBitmapProcState_opts.h
-+++ chromium-84.0.4147.89/third_party/skia/src/opts/SkBitmapProcState_opts.h
+--- chromium-85.0.4183.133.orig/third_party/skia/src/opts/SkBitmapProcState_opts.h
++++ chromium-85.0.4183.133/third_party/skia/src/opts/SkBitmapProcState_opts.h
 @@ -21,7 +21,9 @@
  // The rest are scattershot at the moment but I want to get them
  // all migrated to be normal code inside SkBitmapProcState.cpp.
@@ -180,8 +181,8 @@
      #include <immintrin.h>
  #elif defined(SK_ARM_HAS_NEON)
      #include <arm_neon.h>
---- chromium-84.0.4147.89.orig/third_party/skia/src/opts/SkBlitRow_opts.h
-+++ chromium-84.0.4147.89/third_party/skia/src/opts/SkBlitRow_opts.h
+--- chromium-85.0.4183.133.orig/third_party/skia/src/opts/SkBlitRow_opts.h
++++ chromium-85.0.4183.133/third_party/skia/src/opts/SkBlitRow_opts.h
 @@ -90,7 +90,7 @@
      }
  
@@ -191,8 +192,8 @@
  
      static inline __m128i SkPMSrcOver_SSE2(const __m128i& src, const __m128i& dst) {
          auto SkAlphaMulQ_SSE2 = [](const __m128i& c, const __m128i& scale) {
---- chromium-84.0.4147.89.orig/third_party/skia/src/opts/SkRasterPipeline_opts.h
-+++ chromium-84.0.4147.89/third_party/skia/src/opts/SkRasterPipeline_opts.h
+--- chromium-85.0.4183.133.orig/third_party/skia/src/opts/SkRasterPipeline_opts.h
++++ chromium-85.0.4183.133/third_party/skia/src/opts/SkRasterPipeline_opts.h
 @@ -73,6 +73,8 @@ struct Ctx {
      #define JUMPER_IS_SCALAR
  #elif defined(SK_ARM_HAS_NEON)
@@ -267,16 +268,6 @@
      // These platforms are ideal for wider stages, and their default ABI is ideal.
      #define ABI
      #define JUMPER_NARROW_STAGES 0
-@@ -1940,6 +1961,9 @@ STAGE(to_srgb, Ctx::None) {
-     #elif defined(JUMPER_IS_NEON)
-         const float c = 1.129999995232f,
-                     d = 0.141381442547f;
-+    #elif defined(JUMPER_IS_VSX)
-+        const float c = 1.130002250000f,
-+                    d = 0.141380243004f;
-     #else
-         const float c = 1.129999995232f,
-                     d = 0.141377761960f;
 @@ -3189,7 +3213,8 @@ SI F rcp(F x) {
      __m256 lo,hi;
      split(x, &lo,&hi);
@@ -308,8 +299,8 @@
  #else
      F roundtrip = cast<F>(cast<I32>(x));
      return roundtrip - if_then_else(roundtrip > x, F(1), F(0));
---- chromium-84.0.4147.89.orig/third_party/skia/src/opts/SkSwizzler_opts.h
-+++ chromium-84.0.4147.89/third_party/skia/src/opts/SkSwizzler_opts.h
+--- chromium-85.0.4183.133.orig/third_party/skia/src/opts/SkSwizzler_opts.h
++++ chromium-85.0.4183.133/third_party/skia/src/opts/SkSwizzler_opts.h
 @@ -12,7 +12,9 @@
  
  #include <utility>
@@ -321,8 +312,8 @@
      #include <immintrin.h>
  #elif defined(SK_ARM_HAS_NEON)
      #include <arm_neon.h>
---- chromium-84.0.4147.89.orig/third_party/skia/third_party/skcms/skcms.cc
-+++ chromium-84.0.4147.89/third_party/skia/third_party/skcms/skcms.cc
+--- chromium-85.0.4183.133.orig/third_party/skia/third_party/skcms/skcms.cc
++++ chromium-85.0.4183.133/third_party/skia/third_party/skcms/skcms.cc
 @@ -30,6 +30,8 @@
          #include <avx512fintrin.h>
          #include <avx512dqintrin.h>
@@ -332,8 +323,8 @@
  #endif
  
  // sizeof(x) will return size_t, which is 32-bit on some machines and 64-bit on others.
---- chromium-84.0.4147.89.orig/third_party/skia/third_party/skcms/src/Transform_inl.h
-+++ chromium-84.0.4147.89/third_party/skia/third_party/skcms/src/Transform_inl.h
+--- chromium-85.0.4183.133.orig/third_party/skia/third_party/skcms/src/Transform_inl.h
++++ chromium-85.0.4183.133/third_party/skia/third_party/skcms/src/Transform_inl.h
 @@ -44,6 +44,9 @@ using U8  = V<uint8_t>;
  #if !defined(USING_AVX512F)  && N == 16 && defined(__AVX512F__)
      #define  USING_AVX512F
