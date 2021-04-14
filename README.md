@@ -69,7 +69,7 @@ mv ~/.config/chromium ~/.config/ungoogled-chromium
   <tbody>
 <!-- CURRENT ROW -->
     <tr>
-      <td>v84.0.4147.89-1</td>
+      <td>v85.0.4183.133-1</td>
       <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v85.0.4183.133-1/chromium-browser-stable-85.0.4183.133-1.ppc64le.rpm">rpm</a></td>
       <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v85.0.4183.133-1/chromium-browser-stable-85.0.4183.133-1.tar.xz">.tar.xz</a></td>
       <td align="center"><a href="https://github.com/chromium-ppc64le/chromium-ppc64le/releases/download/v85.0.4183.133-1/ungoogled-chromium-browser-stable-85.0.4183.133-1.ppc64le.rpm">rpm</a></td>
