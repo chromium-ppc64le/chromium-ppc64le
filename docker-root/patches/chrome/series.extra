@@ -1,3 +1,4 @@
+0001-remove-unused-vars-in-gn.patch
 0001-Add-PPC64-support-for-libdav1d.patch
 0001-Fix-libdav1d-compilation-on-clang-ppc.patch
 #enable-vaapi.patch

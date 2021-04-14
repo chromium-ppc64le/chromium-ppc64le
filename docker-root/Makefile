@@ -90,7 +90,7 @@ $(chrome-archive):
 	wget -q $(chrome_url)
 
 $(chrome-dir): | $(chrome-archive)
-	tar xf $|
+	tar -I "xz -T$(NUM_THREADS)" -xf $|
 
 .PHONY: chromium
 chromium: | $(chrome-mk-prereqs)

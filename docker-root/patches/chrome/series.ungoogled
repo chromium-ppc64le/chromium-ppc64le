@@ -7,7 +7,6 @@ ungoogled-chromium/patches/core/inox-patchset/0003-disable-autofill-download-man
 ungoogled-chromium/patches/core/inox-patchset/0005-disable-default-extensions.patch
 ungoogled-chromium/patches/core/inox-patchset/0007-disable-web-resource-service.patch
 ungoogled-chromium/patches/core/inox-patchset/0009-disable-google-ipv6-probes.patch
-ungoogled-chromium/patches/core/inox-patchset/0014-disable-translation-lang-fetch.patch
 ungoogled-chromium/patches/core/inox-patchset/0015-disable-update-pings.patch
 ungoogled-chromium/patches/core/inox-patchset/0017-disable-new-avatar-menu.patch
 ungoogled-chromium/patches/core/inox-patchset/0021-disable-rlz.patch
@@ -19,7 +18,7 @@ ungoogled-chromium/patches/core/ungoogled-chromium/disable-crash-reporter.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-google-host-detection.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/replace-google-search-engine-with-nosearch.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-signin.patch
-ungoogled-chromium/patches/core/ungoogled-chromium/disable-translate.patch
+ungoogled-chromium/patches/core/ungoogled-chromium/toggle-translation-via-switch.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-untraceable-urls.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-profile-avatar-downloading.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/disable-gcm.patch
@@ -37,7 +36,9 @@ ungoogled-chromium/patches/core/ungoogled-chromium/disable-mei-preload.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/fix-building-without-safebrowsing.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/remove-unused-preferences-fields.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/fix-building-without-enabling-reporting.patch
+ungoogled-chromium/patches/core/ungoogled-chromium/block-requests.patch
 ungoogled-chromium/patches/core/bromite/disable-fetching-field-trials.patch
+ungoogled-chromium/patches/core/chromium-upstream/remove-dead-reloc-in-nonalloc-LD-flags.patch
 
 ungoogled-chromium/patches/extra/inox-patchset/0006-modify-default-prefs.patch
 ungoogled-chromium/patches/extra/inox-patchset/0008-restore-classic-ntp.patch
@@ -53,7 +54,6 @@ ungoogled-chromium/patches/extra/debian/disable/fuzzers.patch
 ungoogled-chromium/patches/extra/debian/disable/welcome-page.patch
 ungoogled-chromium/patches/extra/debian/disable/google-api-warning.patch
 ungoogled-chromium/patches/extra/debian/disable/device-notifications.patch
-ungoogled-chromium/patches/extra/debian/warnings/initialization.patch
 ungoogled-chromium/patches/extra/iridium-browser/net-cert-increase-default-key-length-for-newly-gener.patch
 ungoogled-chromium/patches/extra/iridium-browser/mime_util-force-text-x-suse-ymp-to-be-downloaded.patch
 ungoogled-chromium/patches/extra/iridium-browser/prefs-only-keep-cookies-until-exit.patch
@@ -80,12 +80,16 @@ ungoogled-chromium/patches/extra/ungoogled-chromium/disable-webgl-renderer-info.
 ungoogled-chromium/patches/extra/ungoogled-chromium/add-flag-to-show-avatar-button.patch
 ungoogled-chromium/patches/extra/ungoogled-chromium/add-suggestions-url-field.patch
 ungoogled-chromium/patches/extra/ungoogled-chromium/add-flag-to-hide-crashed-bubble.patch
-ungoogled-chromium/patches/extra/ungoogled-chromium/default-to-https-scheme.patch
 ungoogled-chromium/patches/extra/ungoogled-chromium/add-flag-to-scroll-tabs.patch
 ungoogled-chromium/patches/extra/ungoogled-chromium/enable-paste-and-go-new-tab-button.patch
 ungoogled-chromium/patches/extra/ungoogled-chromium/add-flag-for-pdf-plugin-name.patch
-ungoogled-chromium/patches/extra/ungoogled-chromium/ungoogled-chromium/add-flag-for-bookmark-bar-ntp.patch
+ungoogled-chromium/patches/extra/ungoogled-chromium/add-flag-for-bookmark-bar-ntp.patch
+ungoogled-chromium/patches/extra/ungoogled-chromium/enable-default-prefetch-privacy-changes.patch
+ungoogled-chromium/patches/extra/ungoogled-chromium/enable-menu-on-reload-button.patch
+ungoogled-chromium/patches/extra/ungoogled-chromium/add-flag-for-omnibox-autocomplete-filtering.patch
+ungoogled-chromium/patches/extra/ungoogled-chromium/disable-dial-repeating-discovery.patch
+ungoogled-chromium/patches/extra/ungoogled-chromium/remove-uneeded-ui.patch
+ungoogled-chromium/patches/extra/ungoogled-chromium/add-flag-to-close-window-with-last-tab.patch
 ungoogled-chromium/patches/extra/bromite/fingerprinting-flags-client-rects-and-measuretext.patch
 ungoogled-chromium/patches/extra/bromite/flag-max-connections-per-host.patch
 ungoogled-chromium/patches/extra/bromite/flag-fingerprinting-canvas-image-data-noise.patch
-

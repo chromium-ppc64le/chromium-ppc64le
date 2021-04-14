@@ -119,42 +119,33 @@
 +        #include <emmintrin.h>
 +    #endif
  #endif
- 
- #if !defined(__clang__) && defined(__GNUC__) && defined(__mips64)
-@@ -44,7 +53,8 @@
+
+ #if defined __wasm_simd128__
+@@ -49,7 +58,8 @@
      #define SKVX_ALIGNMENT alignas(N * sizeof(T))
  #endif
- 
+
 -#if defined(__GNUC__) && !defined(__clang__) && defined(__SSE__)
 +#if defined(__GNUC__) && !defined(__clang__) && \
 +    (defined(__SSE__) || defined(HAS_PPC64_SSE_COMPAT))
      // GCC warns about ABI changes when returning >= 32 byte vectors when -mavx is not enabled.
      // This only happens for types like VExt whose ABI we don't care about, not for Vec itself.
      #pragma GCC diagnostic ignored "-Wpsabi"
-@@ -523,7 +533,7 @@ static inline Vec<N,uint8_t> approx_scal
+@@ -616,7 +626,7 @@
          }
      #endif
- 
+
 -    #if defined(__SSE__)
 +    #if defined(__SSE__) || defined(HAS_PPC64_SSE_COMPAT)
          static inline Vec<4,float> sqrt(const Vec<4,float>& x) {
              return bit_pun<Vec<4,float>>(_mm_sqrt_ps(bit_pun<__m128>(x)));
          }
-@@ -559,7 +569,7 @@ static inline Vec<N,uint8_t> approx_scal
-                                                        bit_pun<__m128>(t),
-                                                        bit_pun<__m128>(c)));
-         }
--    #elif defined(__SSE__)
-+    #elif defined(__SSE__) || defined(HAS_PPC64_SSE_COMPAT)
-         static inline Vec<4,float> if_then_else(const Vec<4,int  >& c,
-                                                 const Vec<4,float>& t,
-                                                 const Vec<4,float>& e) {
-@@ -613,5 +623,6 @@ static inline Vec<N,uint8_t> approx_scal
+@@ -752,5 +762,6 @@
  #undef SINT
  #undef SIT
  #undef SKVX_ALIGNMENT
 +#undef HAS_PPC64_SSE_COMPAT
- 
+
  #endif//SKVX_DEFINED
 --- chromium-85.0.4183.133.orig/third_party/skia/src/core/SkSpinlock.cpp
 +++ chromium-85.0.4183.133/third_party/skia/src/core/SkSpinlock.cpp
