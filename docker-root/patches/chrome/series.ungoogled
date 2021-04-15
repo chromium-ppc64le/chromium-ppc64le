@@ -37,8 +37,8 @@ ungoogled-chromium/patches/core/ungoogled-chromium/fix-building-without-safebrow
 ungoogled-chromium/patches/core/ungoogled-chromium/remove-unused-preferences-fields.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/fix-building-without-enabling-reporting.patch
 ungoogled-chromium/patches/core/ungoogled-chromium/block-requests.patch
+ungoogled-chromium/patches/core/ungoogled-chromium/remove-enable-dse-memoryssa-cflag.patch
 ungoogled-chromium/patches/core/bromite/disable-fetching-field-trials.patch
-ungoogled-chromium/patches/core/chromium-upstream/remove-dead-reloc-in-nonalloc-LD-flags.patch
 
 ungoogled-chromium/patches/extra/inox-patchset/0006-modify-default-prefs.patch
 ungoogled-chromium/patches/extra/inox-patchset/0008-restore-classic-ntp.patch
@@ -53,7 +53,6 @@ ungoogled-chromium/patches/extra/debian/disable/android.patch
 ungoogled-chromium/patches/extra/debian/disable/fuzzers.patch
 ungoogled-chromium/patches/extra/debian/disable/welcome-page.patch
 ungoogled-chromium/patches/extra/debian/disable/google-api-warning.patch
-ungoogled-chromium/patches/extra/debian/disable/device-notifications.patch
 ungoogled-chromium/patches/extra/iridium-browser/net-cert-increase-default-key-length-for-newly-gener.patch
 ungoogled-chromium/patches/extra/iridium-browser/mime_util-force-text-x-suse-ymp-to-be-downloaded.patch
 ungoogled-chromium/patches/extra/iridium-browser/prefs-only-keep-cookies-until-exit.patch
@@ -93,3 +92,5 @@ ungoogled-chromium/patches/extra/ungoogled-chromium/add-flag-to-close-window-wit
 ungoogled-chromium/patches/extra/bromite/fingerprinting-flags-client-rects-and-measuretext.patch
 ungoogled-chromium/patches/extra/bromite/flag-max-connections-per-host.patch
 ungoogled-chromium/patches/extra/bromite/flag-fingerprinting-canvas-image-data-noise.patch
+
+disable-chrome-pgo-phase.patch

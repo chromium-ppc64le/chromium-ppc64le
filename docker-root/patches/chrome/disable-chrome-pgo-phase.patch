@@ -1,0 +1,11 @@
+--- a/.gn
++++ b/.gn
+@@ -49,6 +49,8 @@
+   # Changes some setup for the Crashpad build to set them to build against
+   # Chromium's zlib, base, etc.
+   crashpad_dependencies = "chromium"
++
++  chrome_pgo_phase = 0
+ }
+ 
+ # These are the list of GN files that run exec_script. This whitelist exists
